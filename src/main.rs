@@ -8,15 +8,11 @@ extern crate rocket_contrib;
 extern crate serde_derive;
 
 mod catchers;
-
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
+mod routes;
 
 fn main() {
     rocket::ignite()
-        .mount("/", routes![index])
+        .mount("/", routes![routes::index])
         .register(catchers![catchers::not_found])
         .launch();
 }
