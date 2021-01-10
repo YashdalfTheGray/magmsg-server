@@ -2,6 +2,12 @@
 
 #[macro_use]
 extern crate rocket;
+#[macro_use]
+extern crate rocket_contrib;
+#[macro_use]
+extern crate serde_derive;
+
+mod catchers;
 
 #[get("/")]
 fn index() -> &'static str {
@@ -9,5 +15,8 @@ fn index() -> &'static str {
 }
 
 fn main() {
-    rocket::ignite().mount("/", routes![index]).launch();
+    rocket::ignite()
+        .mount("/", routes![index])
+        .register(catchers![catchers::not_found])
+        .launch();
 }
