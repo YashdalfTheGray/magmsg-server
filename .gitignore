@@ -1,3 +1,6 @@
+### Project specific ###
+.env
+
 # File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,macos,linux,rust,vim,windows
