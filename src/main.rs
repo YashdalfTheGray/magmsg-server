@@ -20,7 +20,7 @@ fn main() {
     let config = Config::build(Environment::Development)
         .port(match env::var("PORT") {
             Ok(p) => p.parse::<u16>().unwrap_or(8080),
-            Err(e) => 8080,
+            Err(_e) => 8080,
         })
         .finalize()
         .unwrap();
