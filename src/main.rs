@@ -4,14 +4,28 @@
 extern crate rocket;
 #[macro_use]
 extern crate rocket_contrib;
-#[macro_use]
-extern crate serde_derive;
+
+extern crate dotenv;
+
+use dotenv::dotenv;
+use rocket::config::{Config, Environment};
+use std::env;
 
 mod catchers;
 mod routes;
 
 fn main() {
-    rocket::ignite()
+    dotenv().ok();
+
+    let config = Config::build(Environment::Development)
+        .port(match env::var("PORT") {
+            Ok(p) => p.parse::<u16>().unwrap_or(8080),
+            Err(e) => 8080,
+        })
+        .finalize()
+        .unwrap();
+
+    rocket::custom(config)
         .mount("/", routes![routes::index])
         .register(catchers![catchers::not_found])
         .launch();
