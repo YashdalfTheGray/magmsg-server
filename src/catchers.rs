@@ -1,4 +1,3 @@
-use rocket::response::content::Json;
 use rocket_contrib::json::JsonValue;
 
 #[catch(404)]
