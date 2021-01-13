@@ -11,3 +11,8 @@ pub fn api_index() -> JsonValue {
         "status": "okay"
     })
 }
+
+#[get("/api/messages")]
+pub fn get_all_messages() -> JsonValue {
+    json!([])
+}

@@ -26,7 +26,10 @@ fn main() {
         .unwrap();
 
     rocket::custom(config)
-        .mount("/", routes![routes::index, routes::api_index])
+        .mount(
+            "/",
+            routes![routes::index, routes::api_index, routes::get_all_messages],
+        )
         .register(catchers![
             catchers::not_found,
             catchers::internal_error,
