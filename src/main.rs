@@ -27,6 +27,10 @@ fn main() {
 
     rocket::custom(config)
         .mount("/", routes![routes::index])
-        .register(catchers![catchers::not_found])
+        .register(catchers![
+            catchers::not_found,
+            catchers::internal_error,
+            catchers::bad_request
+        ])
         .launch();
 }
