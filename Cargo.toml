@@ -17,6 +17,7 @@ rusoto_core = "0.46.0"
 rusoto_dynamodb = "0.46.0"
 rusoto_sts = "0.46.0"
 rusoto_credential = "0.46.0"
+dynomite = "0.10"
 
 [dependencies.rocket_contrib]
 version = "0.4.6"
