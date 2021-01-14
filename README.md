@@ -18,5 +18,8 @@ AWS_REGION=<aws region>
 
 ## Resources
 
+- [Rust by example](https://doc.rust-lang.org/stable/rust-by-example/index.html)
 - [Rocket guide] (https://rocket.rs/v0.4/guide/introduction/)
 - [Rusoto - AWS SDK for Rust](https://github.com/rusoto/rusoto)
+- [Rusoto docs](https://www.rusoto.org/index.html)
+- [Dynomite](https://github.com/softprops/dynomite)
