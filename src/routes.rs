@@ -1,3 +1,4 @@
+use rocket::http::Status;
 use rocket_contrib::json::JsonValue;
 
 #[get("/")]
@@ -15,4 +16,9 @@ pub fn api_index() -> JsonValue {
 #[get("/api/messages")]
 pub fn get_all_messages() -> JsonValue {
     json!([])
+}
+
+#[put("/api/messages")]
+pub fn add_new_message() -> Status {
+    Status::Created
 }
