@@ -8,6 +8,8 @@ pub fn index() -> &'static str {
 
 #[get("/api")]
 pub fn api_index() -> JsonValue {
+    let messages = crate::dal::get_all_messages();
+
     json!({
         "status": "okay"
     })
