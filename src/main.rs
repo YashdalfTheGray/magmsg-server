@@ -32,7 +32,8 @@ fn main() {
                 routes::index,
                 routes::api_index,
                 routes::get_all_messages,
-                routes::add_new_message
+                routes::add_new_message,
+                routes::get_one_message
             ],
         )
         .register(catchers![

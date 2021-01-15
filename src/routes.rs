@@ -22,3 +22,13 @@ pub fn get_all_messages() -> JsonValue {
 pub fn add_new_message() -> Status {
     Status::Created
 }
+
+#[get("/api/messages/<uuid>")]
+pub fn get_one_message(uuid: String) -> JsonValue {
+    json!({
+        "messageId": uuid,
+        "createdAt": 1234567890,
+        "content": "this is a test message",
+        "createdBy": "user"
+    })
+}
