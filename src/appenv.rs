@@ -15,3 +15,10 @@ pub fn region() -> Region {
         Err(_e) => Region::UsEast2,
     }
 }
+
+pub fn table_name() -> String {
+    match env::var("AWS_DYNAMO_DB_TABLE_NAME") {
+        Ok(t) => t,
+        Err(_e) => "messages".to_string(),
+    }
+}
