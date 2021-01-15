@@ -9,19 +9,18 @@ extern crate dotenv;
 
 use dotenv::dotenv;
 use rocket::config::{Config, Environment};
-use std::env;
 
+mod appenv;
 mod catchers;
+mod dal;
 mod routes;
+mod sdk;
 
 fn main() {
     dotenv().ok();
 
     let config = Config::build(Environment::Development)
-        .port(match env::var("PORT") {
-            Ok(p) => p.parse::<u16>().unwrap_or(8080),
-            Err(_e) => 8080,
-        })
+        .port(appenv::port())
         .finalize()
         .unwrap();
 
