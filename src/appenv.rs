@@ -1,6 +1,7 @@
 use std::env;
 
 use rusoto_core::Region;
+use rusoto_credential::AwsCredentials;
 
 pub fn port() -> u16 {
     match env::var("PORT") {
@@ -21,4 +22,23 @@ pub fn table_name() -> String {
         Ok(t) => t,
         Err(_e) => "messages".to_string(),
     }
+}
+
+pub fn assume_role_user_creds() -> AwsCredentials {
+    let aws_access_key = env::var("AWS_ACCESS_KEY_ID").unwrap();
+    let aws_secret_key = env::var("AWS_SECRET_ACCESS_KEY").unwrap();
+
+    AwsCredentials::new(aws_access_key, aws_secret_key, None, None)
+}
+
+pub fn external_id() -> String {
+    env::var("EXTERNAL_ID").unwrap()
+}
+
+pub fn assume_role_arn() -> String {
+    env::var("AWS_ASSUME_ROLE_ARN").unwrap()
+}
+
+pub fn user_access_token() -> String {
+    env::var("USER_ACCESS_TOKEN").unwrap()
 }
