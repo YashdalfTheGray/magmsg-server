@@ -1,7 +1,7 @@
 use std::env;
 
 use rusoto_core::Region;
-use rusoto_credential::AwsCredentials;
+use rusoto_credential::StaticProvider;
 
 pub fn port() -> u16 {
     match env::var("PORT") {
@@ -24,11 +24,11 @@ pub fn table_name() -> String {
     }
 }
 
-pub fn assume_role_user_creds() -> AwsCredentials {
+pub fn assume_role_user_creds() -> StaticProvider {
     let aws_access_key = env::var("AWS_ACCESS_KEY_ID").unwrap();
     let aws_secret_key = env::var("AWS_SECRET_ACCESS_KEY").unwrap();
 
-    AwsCredentials::new(aws_access_key, aws_secret_key, None, None)
+    StaticProvider::new(aws_access_key, aws_secret_key, None, None)
 }
 
 pub fn external_id() -> String {
