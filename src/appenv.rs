@@ -1,7 +1,7 @@
 use std::env;
 
 use rusoto_core::Region;
-use rusoto_credential::{ProvideAwsCredentials, StaticProvider};
+use rusoto_credential::StaticProvider;
 
 pub fn port() -> u16 {
     match env::var("PORT") {

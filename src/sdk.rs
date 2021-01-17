@@ -1,11 +1,19 @@
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use async_trait::async_trait;
 use chrono::prelude::*;
 use rusoto_core::Region;
 use rusoto_credential::{ProvideAwsCredentials, StaticProvider};
 use rusoto_dynamodb::DynamoDbClient;
 use rusoto_sts::{AssumeRoleRequest, Sts, StsClient};
+
+pub struct StsProvider {}
+
+#[async_trait]
+impl ProvideAwsCredentials for StsProvider {
+    async fn credentials(&self) -> Result<AwsCredentials, CredentialsError> {}
+}
 
 pub async fn get_creds<P>(
     role_arn: String,
