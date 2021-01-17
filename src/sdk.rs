@@ -3,16 +3,16 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use chrono::prelude::*;
 use rusoto_core::Region;
-use rusoto_credential::StaticProvider;
+use rusoto_credential::{ProvideAwsCredentials, StaticProvider};
 use rusoto_dynamodb::DynamoDbClient;
 use rusoto_sts::{AssumeRoleRequest, Sts, StsClient};
 
-pub async fn get_creds(
+pub async fn get_creds<P>(
     role_arn: String,
     external_id: String,
     region: Region,
     user_creds_provider: Option<StaticProvider>,
-) -> StaticProvider {
+) -> impl ProvideAwsCredentials {
     let credentials_provider = match user_creds_provider {
         Some(cp) => cp,
         None => crate::appenv::assume_role_user_creds(),
@@ -39,13 +39,14 @@ pub async fn get_creds(
     )
 }
 
-pub fn get_dynamo_client(
-    access_key_id: String,
-    secret_access_key: String,
-    session_token: String,
-    region: Region,
-) {
-    let client = DynamoDbClient::new(region);
+pub fn get_dynamo_client<P>(credential_provider: P, region: Region) -> DynamoDbClient
+where
+    P: ProvideAwsCredentials + Sync + Send + 'static,
+{
+    let http_client = rusoto_core::HttpClient::new().unwrap();
+    let arced_client = Arc::new(http_client);
+
+    DynamoDbClient::new_with(arced_client, credential_provider, region)
 }
 
 fn get_time_in_millis() -> u128 {
