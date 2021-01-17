@@ -1,20 +1,19 @@
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use chrono::prelude::*;
 use rusoto_core::Region;
 use rusoto_credential::StaticProvider;
 use rusoto_dynamodb::DynamoDbClient;
-use rusoto_sts::{AssumeRoleRequest, StsClient};
+use rusoto_sts::{AssumeRoleRequest, Sts, StsClient};
 
-use crate::appenv::external_id;
-
-pub fn get_creds(
+pub async fn get_creds(
     role_arn: String,
     external_id: String,
     region: Region,
     user_creds_provider: Option<StaticProvider>,
-) {
-    let credentials_provider = match (user_creds_provider) {
+) -> StaticProvider {
+    let credentials_provider = match user_creds_provider {
         Some(cp) => cp,
         None => crate::appenv::assume_role_user_creds(),
     };
@@ -28,6 +27,16 @@ pub fn get_creds(
         role_session_name: format!("messages-session-{}", get_time_in_millis()),
         ..Default::default()
     };
+
+    let response = client.assume_role(request).await.unwrap();
+    let creds = response.credentials.unwrap();
+
+    StaticProvider::new(
+        creds.access_key_id,
+        creds.secret_access_key,
+        Some(creds.session_token),
+        Some(get_time_to_expire(creds.expiration)),
+    )
 }
 
 pub fn get_dynamo_client(
