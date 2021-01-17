@@ -47,3 +47,10 @@ fn get_time_in_millis() -> u128 {
 
     since_the_epoch.as_millis()
 }
+
+fn get_time_to_expire(expiration_str: String) -> i64 {
+    let expiration_time = DateTime::parse_from_rfc3339(&expiration_str).unwrap();
+    let right_now = Utc::now();
+
+    expiration_time.timestamp() - right_now.timestamp()
+}
