@@ -8,21 +8,21 @@ use rusoto_credential::{AwsCredentials, CredentialsError, ProvideAwsCredentials,
 use rusoto_dynamodb::DynamoDbClient;
 use rusoto_sts::{AssumeRoleRequest, Sts, StsClient};
 
-pub struct StsProvider {
+pub struct CustomStsProvider {
     pub user_creds: StaticProvider,
     pub assume_role_arn: String,
     pub external_id: Option<String>,
     pub region: Region,
 }
 
-impl StsProvider {
+impl CustomStsProvider {
     pub fn new(
         user_creds: StaticProvider,
         assume_role_arn: String,
         external_id: Option<String>,
         region: Region,
-    ) -> StsProvider {
-        StsProvider {
+    ) -> CustomStsProvider {
+        CustomStsProvider {
             user_creds,
             assume_role_arn,
             external_id,
@@ -32,18 +32,19 @@ impl StsProvider {
 }
 
 #[async_trait]
-impl ProvideAwsCredentials for StsProvider {
+impl ProvideAwsCredentials for CustomStsProvider {
     async fn credentials(&self) -> Result<AwsCredentials, CredentialsError> {
-        let assume_role_creds_provider = crate::appenv::assume_role_user_creds();
-        let region = crate::appenv::region();
-
         let http_client = rusoto_core::HttpClient::new().unwrap();
         let arced_client = Arc::new(http_client);
-        let client = StsClient::new_with(arced_client, assume_role_creds_provider, region);
+        let client =
+            StsClient::new_with(arced_client, self.user_creds.clone(), self.region.clone());
 
         let request: AssumeRoleRequest = AssumeRoleRequest {
-            external_id: Some(crate::appenv::external_id()),
-            role_arn: crate::appenv::assume_role_arn(),
+            external_id: match &self.external_id {
+                Some(ex) => Some(ex.clone()),
+                None => None,
+            },
+            role_arn: self.assume_role_arn.clone(),
             role_session_name: format!("messages-session-{}", get_time_in_millis()),
             ..Default::default()
         };
