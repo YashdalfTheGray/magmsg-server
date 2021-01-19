@@ -25,20 +25,24 @@ pub fn table_name() -> String {
 }
 
 pub fn assume_role_user_creds() -> StaticProvider {
-    let aws_access_key = env::var("AWS_ACCESS_KEY_ID").unwrap();
-    let aws_secret_key = env::var("AWS_SECRET_ACCESS_KEY").unwrap();
+    let aws_access_key = env::var("AWS_ACCESS_KEY_ID")
+        .expect("Environment variable AWS_ACCESS_KEY_ID is required to be defined.");
+    let aws_secret_key = env::var("AWS_SECRET_ACCESS_KEY")
+        .expect("Environment variable AWS_SECRET_ACCESS_KEY is required to be defined.");
 
     StaticProvider::new_minimal(aws_access_key, aws_secret_key)
 }
 
 pub fn external_id() -> String {
-    env::var("EXTERNAL_ID").unwrap()
+    env::var("EXTERNAL_ID").expect("Environment variable EXTERNAL_ID is required to be defined.")
 }
 
 pub fn assume_role_arn() -> String {
-    env::var("AWS_ASSUME_ROLE_ARN").unwrap()
+    env::var("AWS_ASSUME_ROLE_ARN")
+        .expect("Environment variable AWS_ASSUME_ROLE_ARN is required to be defined.")
 }
 
 pub fn user_access_token() -> String {
-    env::var("USER_ACCESS_TOKEN").unwrap()
+    env::var("USER_ACCESS_TOKEN")
+        .expect("Environment variable USER_ACCESS_TOKEN is required to be defined.")
 }

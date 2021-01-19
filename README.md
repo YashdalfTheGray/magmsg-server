@@ -23,4 +23,4 @@ AWS_REGION=<aws region>
 - [Rusoto - AWS SDK for Rust](https://github.com/rusoto/rusoto)
 - [Rusoto docs](https://www.rusoto.org/index.html)
 - [Dynomite](https://github.com/softprops/dynomite)
-- [Rusoto Auth example](https://github.com/lucdew/rusoto-example/blob/master/src/credentials.rs)
+- [Rusoto Auth example](https://github.com/lucdew/rusoto-example)
