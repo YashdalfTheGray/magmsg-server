@@ -86,3 +86,12 @@ fn get_time_to_expire(expiration_str: String) -> i64 {
 
     expiration_time.timestamp() - right_now.timestamp()
 }
+
+fn parse_into_utc(expiration_str: String) -> DateTime<Utc> {
+    DateTime::from_utc(
+        DateTime::parse_from_rfc3339(&expiration_str)
+            .unwrap()
+            .naive_utc(),
+        Utc,
+    )
+}
