@@ -15,6 +15,22 @@ pub struct StsProvider {
     pub region: Region,
 }
 
+impl StsProvider {
+    pub fn new(
+        user_creds: StaticProvider,
+        assume_role_arn: String,
+        external_id: Option<String>,
+        region: Region,
+    ) -> StsProvider {
+        StsProvider {
+            user_creds,
+            assume_role_arn,
+            external_id,
+            region,
+        }
+    }
+}
+
 #[async_trait]
 impl ProvideAwsCredentials for StsProvider {
     async fn credentials(&self) -> Result<AwsCredentials, CredentialsError> {
