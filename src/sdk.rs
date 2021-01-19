@@ -27,8 +27,13 @@ impl ProvideAwsCredentials for StsProvider {
             ..Default::default()
         };
 
-        let response = client.assume_role(request).await?;
-        let creds = response.credentials?;
+        let response = client
+            .assume_role(request)
+            .await
+            .or_else(|err| Err(CredentialsError::new(err.to_string())))?;
+        let creds = response
+            .credentials
+            .ok_or_else(|| CredentialsError::new("Did not find credentials in response"))?;
 
         Ok(AwsCredentials::new(
             creds.access_key_id,
