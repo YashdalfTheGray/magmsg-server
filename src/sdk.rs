@@ -39,7 +39,7 @@ impl ProvideAwsCredentials for StsProvider {
     }
 }
 
-pub async fn get_creds<P>(
+pub async fn get_creds(
     role_arn: String,
     external_id: String,
     region: Region,
