@@ -4,7 +4,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use async_trait::async_trait;
 use chrono::prelude::*;
 use rusoto_core::Region;
-use rusoto_credential::{CredentialsError, ProvideAwsCredentials, StaticProvider};
+use rusoto_credential::{AwsCredentials, CredentialsError, ProvideAwsCredentials, StaticProvider};
 use rusoto_dynamodb::DynamoDbClient;
 use rusoto_sts::{AssumeRoleRequest, Sts, StsClient};
 
@@ -26,6 +26,16 @@ impl ProvideAwsCredentials for StsProvider {
             role_session_name: format!("messages-session-{}", get_time_in_millis()),
             ..Default::default()
         };
+
+        let response = client.assume_role(request).await?;
+        let creds = response.credentials?;
+
+        Ok(AwsCredentials::new(
+            creds.access_key_id,
+            creds.secret_access_key,
+            Some(creds.session_token),
+            Some(parse_into_utc(creds.expiration)),
+        ))
     }
 }
 
