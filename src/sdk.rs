@@ -4,7 +4,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use async_trait::async_trait;
 use chrono::prelude::*;
 use rusoto_core::Region;
-use rusoto_credential::{ProvideAwsCredentials, StaticProvider};
+use rusoto_credential::{CredentialsError, ProvideAwsCredentials, StaticProvider};
 use rusoto_dynamodb::DynamoDbClient;
 use rusoto_sts::{AssumeRoleRequest, Sts, StsClient};
 
@@ -12,7 +12,21 @@ pub struct StsProvider {}
 
 #[async_trait]
 impl ProvideAwsCredentials for StsProvider {
-    async fn credentials(&self) -> Result<AwsCredentials, CredentialsError> {}
+    async fn credentials(&self) -> Result<AwsCredentials, CredentialsError> {
+        let assume_role_creds_provider = crate::appenv::assume_role_user_creds();
+        let region = crate::appenv::region();
+
+        let http_client = rusoto_core::HttpClient::new().unwrap();
+        let arced_client = Arc::new(http_client);
+        let client = StsClient::new_with(arced_client, assume_role_creds_provider, region);
+
+        let request: AssumeRoleRequest = AssumeRoleRequest {
+            external_id: Some(crate::appenv::external_id()),
+            role_arn: crate::appenv::assume_role_arn(),
+            role_session_name: format!("messages-session-{}", get_time_in_millis()),
+            ..Default::default()
+        };
+    }
 }
 
 pub async fn get_creds<P>(
