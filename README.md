@@ -24,3 +24,4 @@ AWS_REGION=<aws region>
 - [Rusoto docs](https://www.rusoto.org/index.html)
 - [Dynomite](https://github.com/softprops/dynomite)
 - [Rusoto Auth example](https://github.com/lucdew/rusoto-example)
+- [Cool blog about error handling](https://nick.groenen.me/posts/rust-error-handling/)
