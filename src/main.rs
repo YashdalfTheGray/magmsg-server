@@ -9,6 +9,7 @@ extern crate dotenv;
 
 use dotenv::dotenv;
 use rocket::config::{Config, Environment};
+use rusoto_credential::AutoRefreshingProvider;
 
 mod appenv;
 mod catchers;
@@ -24,7 +25,18 @@ fn main() {
         .finalize()
         .unwrap();
 
+    let creds_provider = sdk::CustomStsProvider::new(
+        appenv::assume_role_user_creds(),
+        appenv::assume_role_arn(),
+        Some(appenv::external_id()),
+        appenv::region(),
+    );
+
+    let auto_creds_provider = AutoRefreshingProvider::new(creds_provider)
+        .expect("Something went wrong while crating a creds provider");
+
     rocket::custom(config)
+        .manage(auto_creds_provider)
         .mount(
             "/",
             routes![
