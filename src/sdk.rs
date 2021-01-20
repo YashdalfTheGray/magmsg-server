@@ -8,6 +8,7 @@ use rusoto_credential::{AwsCredentials, CredentialsError, ProvideAwsCredentials,
 use rusoto_dynamodb::DynamoDbClient;
 use rusoto_sts::{AssumeRoleRequest, Sts, StsClient};
 
+#[derive(Debug, Clone)]
 pub struct CustomStsProvider {
     pub user_creds: StaticProvider,
     pub assume_role_arn: String,
