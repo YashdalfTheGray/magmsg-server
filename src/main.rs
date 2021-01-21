@@ -14,6 +14,7 @@ use rusoto_credential::AutoRefreshingProvider;
 mod appenv;
 mod catchers;
 mod dal;
+mod message;
 mod routes;
 mod sdk;
 
