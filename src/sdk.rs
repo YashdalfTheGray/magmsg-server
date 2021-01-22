@@ -1,8 +1,6 @@
 use std::sync::Arc;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 use async_trait::async_trait;
-use chrono::prelude::*;
 use rusoto_core::Region;
 use rusoto_credential::{AwsCredentials, CredentialsError, ProvideAwsCredentials, StaticProvider};
 use rusoto_dynamodb::DynamoDbClient;
@@ -46,7 +44,7 @@ impl ProvideAwsCredentials for CustomStsProvider {
                 None => None,
             },
             role_arn: self.assume_role_arn.clone(),
-            role_session_name: format!("messages-session-{}", get_time_in_millis()),
+            role_session_name: format!("messages-session-{}", crate::utils::get_time_in_millis()),
             ..Default::default()
         };
 
@@ -62,7 +60,7 @@ impl ProvideAwsCredentials for CustomStsProvider {
             creds.access_key_id,
             creds.secret_access_key,
             Some(creds.session_token),
-            Some(parse_into_utc(creds.expiration)),
+            Some(crate::utils::parse_into_utc(creds.expiration)),
         ))
     }
 }
@@ -84,7 +82,7 @@ pub async fn get_creds(
     let request: AssumeRoleRequest = AssumeRoleRequest {
         external_id: Some(external_id),
         role_arn: role_arn,
-        role_session_name: format!("messages-session-{}", get_time_in_millis()),
+        role_session_name: format!("messages-session-{}", crate::utils::get_time_in_millis()),
         ..Default::default()
     };
 
@@ -95,7 +93,7 @@ pub async fn get_creds(
         creds.access_key_id,
         creds.secret_access_key,
         Some(creds.session_token),
-        Some(get_time_to_expire(creds.expiration)),
+        Some(crate::utils::get_time_to_expire(creds.expiration)),
     )
 }
 
@@ -107,29 +105,4 @@ where
     let arced_client = Arc::new(http_client);
 
     DynamoDbClient::new_with(arced_client, credential_provider, region)
-}
-
-fn get_time_in_millis() -> u128 {
-    let start = SystemTime::now();
-    let since_the_epoch = start
-        .duration_since(UNIX_EPOCH)
-        .expect("Time went backwards");
-
-    since_the_epoch.as_millis()
-}
-
-fn get_time_to_expire(expiration_str: String) -> i64 {
-    let expiration_time = DateTime::parse_from_rfc3339(&expiration_str).unwrap();
-    let right_now = Utc::now();
-
-    expiration_time.timestamp() - right_now.timestamp()
-}
-
-fn parse_into_utc(expiration_str: String) -> DateTime<Utc> {
-    DateTime::from_utc(
-        DateTime::parse_from_rfc3339(&expiration_str)
-            .unwrap()
-            .naive_utc(),
-        Utc,
-    )
 }

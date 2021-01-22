@@ -17,6 +17,7 @@ mod dal;
 mod message;
 mod routes;
 mod sdk;
+mod utils;
 
 fn main() {
     dotenv().ok();
