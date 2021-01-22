@@ -2,6 +2,18 @@ use std::collections::HashMap;
 
 use rusoto_dynamodb::AttributeValue;
 
+enum AttributeDataType {
+    B,
+    BS,
+    L,
+    M,
+    N,
+    NS,
+    NULL,
+    S,
+    SS,
+}
+
 #[derive(Debug, Clone)]
 pub struct Message {
     message_id: String,
