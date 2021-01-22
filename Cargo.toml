@@ -13,7 +13,7 @@ serde_json = "1.0"
 serde_derive = "1.0.118"
 dotenv = "0.15.0"
 dotenv_codegen = "0.15.0"
-uuid = "0.8"
+uuid = { version = "0.8", features = ["v4"] }
 rusoto_core = "0.46.0"
 rusoto_dynamodb = "0.46.0"
 rusoto_sts = "0.46.0"
