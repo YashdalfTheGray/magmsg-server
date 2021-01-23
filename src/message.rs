@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use rusoto_dynamodb::AttributeValue;
+use uuid::Uuid;
 
 #[derive(Debug, Clone)]
 pub struct Message {
@@ -8,6 +9,17 @@ pub struct Message {
     created_at: u128,
     content: String,
     created_by: String,
+}
+
+impl Message {
+    pub fn new(message: String, author: String) -> Self {
+        Message {
+            message_id: Uuid::new_v4().to_hyphenated().to_string(),
+            created_at: crate::utils::get_time_in_millis(),
+            content: message,
+            created_by: author,
+        }
+    }
 }
 
 impl From<HashMap<String, AttributeValue>> for Message {
