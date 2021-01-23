@@ -5,7 +5,7 @@ use rusoto_dynamodb::AttributeValue;
 #[derive(Debug, Clone)]
 pub struct Message {
     message_id: String,
-    created_at: u64,
+    created_at: u128,
     content: String,
     created_by: String,
 }
@@ -18,12 +18,12 @@ impl From<HashMap<String, AttributeValue>> for Message {
                 |val| val.s.clone().unwrap_or_default(),
             ),
             created_at: dynamo_item.get("createdAt").map_or_else(
-                || u64::default(),
+                || u128::default(),
                 |val| {
                     val.n
                         .clone()
                         .unwrap_or_default()
-                        .parse::<u64>()
+                        .parse::<u128>()
                         .unwrap_or_default()
                 },
             ),
