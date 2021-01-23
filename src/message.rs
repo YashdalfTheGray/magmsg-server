@@ -25,28 +25,10 @@ impl Message {
 impl From<HashMap<String, AttributeValue>> for Message {
     fn from(dynamo_item: HashMap<String, AttributeValue>) -> Self {
         Message {
-            message_id: dynamo_item.get("messageId").map_or_else(
-                || String::default(),
-                |val| val.s.clone().unwrap_or_default(),
-            ),
-            created_at: dynamo_item.get("createdAt").map_or_else(
-                || u128::default(),
-                |val| {
-                    val.n
-                        .clone()
-                        .unwrap_or_default()
-                        .parse::<u128>()
-                        .unwrap_or_default()
-                },
-            ),
-            content: dynamo_item.get("content").map_or_else(
-                || String::default(),
-                |val| val.s.clone().unwrap_or_default(),
-            ),
-            created_by: dynamo_item.get("createdBy").map_or_else(
-                || String::default(),
-                |val| val.s.clone().unwrap_or_default(),
-            ),
+            message_id: crate::utils::get_string_from_attribute_value(dynamo_item.get("messageId")),
+            created_at: crate::utils::get_number_from_attribute_value(dynamo_item.get("createdAt")),
+            content: crate::utils::get_string_from_attribute_value(dynamo_item.get("content")),
+            created_by: crate::utils::get_string_from_attribute_value(dynamo_item.get("createdBy")),
         }
     }
 }
