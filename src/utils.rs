@@ -1,6 +1,7 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use chrono::prelude::*;
+use rusoto_dynamodb::AttributeValue;
 
 pub fn get_time_in_millis() -> u128 {
     let start = SystemTime::now();
@@ -24,5 +25,25 @@ pub fn parse_into_utc(expiration_str: String) -> DateTime<Utc> {
             .unwrap()
             .naive_utc(),
         Utc,
+    )
+}
+
+pub fn get_string_from_attribute_value(attr: Option<&AttributeValue>) -> String {
+    attr.map_or_else(
+        || String::default(),
+        |val| val.s.clone().unwrap_or_default(),
+    )
+}
+
+pub fn get_number_from_attribute_value(attr: Option<&AttributeValue>) -> u128 {
+    attr.map_or_else(
+        || u128::default(),
+        |val| {
+            val.n
+                .clone()
+                .unwrap_or_default()
+                .parse::<u128>()
+                .unwrap_or_default()
+        },
     )
 }
