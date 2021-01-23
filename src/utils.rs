@@ -47,3 +47,17 @@ pub fn get_number_from_attribute_value(attr: Option<&AttributeValue>) -> u128 {
         },
     )
 }
+
+pub fn wrap_string_in_attribute_value(str: String) -> AttributeValue {
+    AttributeValue {
+        s: Some(str),
+        ..AttributeValue::default()
+    }
+}
+
+pub fn wrap_number_in_attribute_value(num: u128) -> AttributeValue {
+    AttributeValue {
+        n: Some(num.to_string()),
+        ..AttributeValue::default()
+    }
+}
