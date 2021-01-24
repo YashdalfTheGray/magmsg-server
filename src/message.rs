@@ -27,8 +27,8 @@ impl Message {
     }
 }
 
-impl From<HashMap<String, AttributeValue>> for Message {
-    fn from(dynamo_item: HashMap<String, AttributeValue>) -> Self {
+impl From<&HashMap<String, AttributeValue>> for Message {
+    fn from(dynamo_item: &HashMap<String, AttributeValue>) -> Self {
         Message {
             message_id: crate::utils::get_string_from_attribute_value(dynamo_item.get(ID_FIELD)),
             created_at: crate::utils::get_number_from_attribute_value(
