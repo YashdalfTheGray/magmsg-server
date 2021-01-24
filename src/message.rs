@@ -44,7 +44,24 @@ impl From<HashMap<String, AttributeValue>> for Message {
 
 impl Into<HashMap<String, AttributeValue>> for Message {
     fn into(self) -> HashMap<String, AttributeValue> {
-        let result = HashMap::<String, AttributeValue>::new();
+        let mut result = HashMap::<String, AttributeValue>::new();
+
+        result.insert(
+            id_field.to_string(),
+            crate::utils::wrap_string_in_attribute_value(self.message_id),
+        );
+        result.insert(
+            created_at_field.to_string(),
+            crate::utils::wrap_string_in_attribute_value(self.created_at.to_string()),
+        );
+        result.insert(
+            content_field.to_string(),
+            crate::utils::wrap_string_in_attribute_value(self.content),
+        );
+        result.insert(
+            created_by_field.to_string(),
+            crate::utils::wrap_string_in_attribute_value(self.created_by),
+        );
 
         result
     }
