@@ -30,10 +30,14 @@ impl Message {
 impl From<HashMap<String, AttributeValue>> for Message {
     fn from(dynamo_item: HashMap<String, AttributeValue>) -> Self {
         Message {
-            message_id: crate::utils::get_string_from_attribute_value(dynamo_item.get("messageId")),
-            created_at: crate::utils::get_number_from_attribute_value(dynamo_item.get("createdAt")),
-            content: crate::utils::get_string_from_attribute_value(dynamo_item.get("content")),
-            created_by: crate::utils::get_string_from_attribute_value(dynamo_item.get("createdBy")),
+            message_id: crate::utils::get_string_from_attribute_value(dynamo_item.get(id_field)),
+            created_at: crate::utils::get_number_from_attribute_value(
+                dynamo_item.get(created_at_field),
+            ),
+            content: crate::utils::get_string_from_attribute_value(dynamo_item.get(content_field)),
+            created_by: crate::utils::get_string_from_attribute_value(
+                dynamo_item.get(created_by_field),
+            ),
         }
     }
 }
