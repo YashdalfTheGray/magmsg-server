@@ -3,6 +3,11 @@ use std::collections::HashMap;
 use rusoto_dynamodb::AttributeValue;
 use uuid::Uuid;
 
+const id_field: &str = "messageId";
+const created_at_field: &str = "createdAt";
+const content_field: &str = "content";
+const created_by_field: &str = "createdBy";
+
 #[derive(Debug, Clone)]
 pub struct Message {
     message_id: String,
