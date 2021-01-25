@@ -1,3 +1,4 @@
+use futures::future::Future;
 use rocket::{http::Status, State};
 use rocket_contrib::json::JsonValue;
 use rusoto_credential::AutoRefreshingProvider;
@@ -21,13 +22,15 @@ pub fn get_all_messages(
     creds_provider: State<AutoRefreshingProvider<CustomStsProvider>>,
 ) -> JsonValue {
     let region = crate::appenv::region();
+    let runtime = tokio::runtime::Runtime::new().unwrap();
     let client = crate::sdk::get_dynamo_client((*creds_provider.get_ref()).clone(), region);
-    let messages = crate::dal::get_all_messages(
+    let messages_future = crate::dal::get_all_messages(
         client,
         crate::appenv::table_name(),
         Some("createdAt,content".to_string()),
     );
-    json!([])
+    let messages = runtime.block_on(messages_future);
+    json!(messages)
 }
 
 #[put("/api/messages")]
