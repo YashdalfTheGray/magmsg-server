@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use rusoto_dynamodb::AttributeValue;
+use serde::Serialize;
 use uuid::Uuid;
 
 const ID_FIELD: &str = "messageId";
@@ -8,11 +9,15 @@ const CREATED_AT_FIELD: &str = "createdAt";
 const CONTENT_FIELD: &str = "content";
 const CREATED_BY_FIELD: &str = "createdBy";
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Debug, Clone)]
 pub struct Message {
+    #[serde(default, rename = "messageId")]
     message_id: String,
+    #[serde(default, rename = "createdAt")]
     created_at: u128,
+    #[serde(default, rename = "content")]
     content: String,
+    #[serde(default, rename = "createdBy")]
     created_by: String,
 }
 
