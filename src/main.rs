@@ -8,6 +8,7 @@ extern crate rocket_contrib;
 extern crate dotenv;
 
 use dotenv::dotenv;
+use futures::prelude::*;
 use rocket::config::{Config, Environment};
 use rusoto_credential::AutoRefreshingProvider;
 
