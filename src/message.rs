@@ -52,7 +52,7 @@ impl Into<HashMap<String, AttributeValue>> for Message {
         );
         result.insert(
             CREATED_AT_FIELD.to_string(),
-            crate::utils::wrap_string_in_attribute_value(self.created_at.to_string()),
+            crate::utils::wrap_number_in_attribute_value(self.created_at),
         );
         result.insert(
             CONTENT_FIELD.to_string(),
