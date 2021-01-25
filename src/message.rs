@@ -4,10 +4,7 @@ use rusoto_dynamodb::AttributeValue;
 use serde::Serialize;
 use uuid::Uuid;
 
-const ID_FIELD: &str = "messageId";
-const CREATED_AT_FIELD: &str = "createdAt";
-const CONTENT_FIELD: &str = "content";
-const CREATED_BY_FIELD: &str = "createdBy";
+use crate::constants::*;
 
 #[derive(Serialize, Debug, Clone)]
 pub struct Message {
