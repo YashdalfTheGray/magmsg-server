@@ -30,7 +30,7 @@ impl Message {
 
     pub fn not_found(message_id: String) -> Self {
         Message {
-            message_id: message_id,
+            message_id,
             created_at: 0,
             content: "Message with specified message ID not found.".to_string(),
             created_by: "magmsg-server".to_string(),
@@ -40,6 +40,21 @@ impl Message {
 
 impl From<&HashMap<String, AttributeValue>> for Message {
     fn from(dynamo_item: &HashMap<String, AttributeValue>) -> Self {
+        Message {
+            message_id: crate::utils::get_string_from_attribute_value(dynamo_item.get(ID_FIELD)),
+            created_at: crate::utils::get_number_from_attribute_value(
+                dynamo_item.get(CREATED_AT_FIELD),
+            ),
+            content: crate::utils::get_string_from_attribute_value(dynamo_item.get(CONTENT_FIELD)),
+            created_by: crate::utils::get_string_from_attribute_value(
+                dynamo_item.get(CREATED_BY_FIELD),
+            ),
+        }
+    }
+}
+
+impl From<HashMap<String, AttributeValue>> for Message {
+    fn from(dynamo_item: HashMap<String, AttributeValue>) -> Self {
         Message {
             message_id: crate::utils::get_string_from_attribute_value(dynamo_item.get(ID_FIELD)),
             created_at: crate::utils::get_number_from_attribute_value(
