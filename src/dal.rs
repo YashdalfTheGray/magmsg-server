@@ -1,5 +1,8 @@
-use rusoto_dynamodb::{DynamoDb, DynamoDbClient, ScanInput};
+use std::collections::HashMap;
 
+use rusoto_dynamodb::{AttributeValue, DynamoDb, DynamoDbClient, GetItemInput, ScanInput};
+
+use crate::constants::*;
 use crate::message::Message;
 
 pub async fn get_all_messages(
@@ -23,4 +26,35 @@ pub async fn get_all_messages(
         .iter()
         .map(|ddb_item| Message::from(ddb_item))
         .collect::<Vec<_>>()
+}
+
+pub async fn get_one_message(
+    client: DynamoDbClient,
+    table_name: String,
+    message_id: String,
+    fields_to_get_csv: Option<String>,
+) -> Message {
+    let mut item_key = HashMap::new();
+    item_key.insert(
+        ID_FIELD.to_string(),
+        AttributeValue {
+            s: Some(message_id.to_string()),
+            ..Default::default()
+        },
+    );
+
+    let get_item_input = GetItemInput {
+        table_name,
+        key: item_key,
+        projection_expression: fields_to_get_csv,
+        ..Default::default()
+    };
+
+    client.get_item(get_item_input).await.map_or_else(
+        |_| Message::not_found(message_id.to_string()),
+        |response| match response.item {
+            Some(item) => Message::from(item),
+            None => Message::not_found(message_id.to_string()),
+        },
+    )
 }
