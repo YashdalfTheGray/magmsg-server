@@ -27,6 +27,15 @@ impl Message {
             created_by: author,
         }
     }
+
+    pub fn not_found(message_id: String) -> Self {
+        Message {
+            message_id: message_id,
+            created_at: 0,
+            content: "Message with specified message ID not found.".to_string(),
+            created_by: "magmsg-server".to_string(),
+        }
+    }
 }
 
 impl From<&HashMap<String, AttributeValue>> for Message {
