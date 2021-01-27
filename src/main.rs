@@ -16,6 +16,7 @@ mod catchers;
 mod constants;
 mod dal;
 mod message;
+mod message_request;
 mod routes;
 mod sdk;
 mod utils;

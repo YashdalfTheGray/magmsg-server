@@ -2,6 +2,7 @@ use rocket::{http::Status, State};
 use rocket_contrib::json::JsonValue;
 use rusoto_credential::AutoRefreshingProvider;
 
+use crate::message_request::MessageRequest;
 use crate::sdk::CustomStsProvider;
 
 #[get("/")]
@@ -29,8 +30,12 @@ pub fn get_all_messages(
     json!(messages)
 }
 
-#[put("/api/messages")]
-pub fn add_new_message() -> Status {
+#[put(
+    "/api/messages",
+    format = "application/json",
+    data = "<message_request>"
+)]
+pub fn add_new_message(message_request: MessageRequest) -> Status {
     Status::Created
 }
 
