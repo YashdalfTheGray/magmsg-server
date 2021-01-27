@@ -34,20 +34,17 @@ pub fn add_new_message() -> Status {
     Status::Created
 }
 
-#[get("/api/messages/<uuid>")]
+#[get("/api/messages/<uuid>?<fields>")]
 pub fn get_one_message(
     uuid: String,
+    fields: Option<String>,
     creds_provider: State<AutoRefreshingProvider<CustomStsProvider>>,
 ) -> JsonValue {
     let region = crate::appenv::region();
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let client = crate::sdk::get_dynamo_client((*creds_provider.get_ref()).clone(), region);
-    let message_future = crate::dal::get_one_message(
-        client,
-        crate::appenv::table_name(),
-        uuid,
-        Some("createdAt,content".to_string()),
-    );
+    let message_future =
+        crate::dal::get_one_message(client, crate::appenv::table_name(), uuid, fields);
     let message = runtime.block_on(message_future);
     json!(message)
 }
