@@ -1,4 +1,3 @@
-use futures::future::Future;
 use rocket::{http::Status, State};
 use rocket_contrib::json::JsonValue;
 use rusoto_credential::AutoRefreshingProvider;
@@ -39,11 +38,19 @@ pub fn add_new_message() -> Status {
 }
 
 #[get("/api/messages/<uuid>")]
-pub fn get_one_message(uuid: String) -> JsonValue {
-    json!({
-        "messageId": uuid,
-        "createdAt": 1234567890,
-        "content": "this is a test message",
-        "createdBy": "user"
-    })
+pub fn get_one_message(
+    uuid: String,
+    creds_provider: State<AutoRefreshingProvider<CustomStsProvider>>,
+) -> JsonValue {
+    let region = crate::appenv::region();
+    let runtime = tokio::runtime::Runtime::new().unwrap();
+    let client = crate::sdk::get_dynamo_client((*creds_provider.get_ref()).clone(), region);
+    let message_future = crate::dal::get_one_message(
+        client,
+        crate::appenv::table_name(),
+        uuid,
+        Some("createdAt,content".to_string()),
+    );
+    let message = runtime.block_on(message_future);
+    json!(message)
 }
