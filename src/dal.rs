@@ -11,7 +11,7 @@ pub async fn get_all_messages(
     fields_to_get_csv: Option<String>,
 ) -> Vec<Message> {
     let scan_input = ScanInput {
-        table_name: table_name,
+        table_name,
         projection_expression: fields_to_get_csv,
         ..Default::default()
     };
@@ -34,8 +34,8 @@ pub async fn get_one_message(
     message_id: String,
     fields_to_get_csv: Option<String>,
 ) -> Message {
-    let mut item_key = HashMap::new();
-    item_key.insert(
+    let mut key = HashMap::new();
+    key.insert(
         ID_FIELD.to_string(),
         AttributeValue {
             s: Some(message_id.to_string()),
@@ -45,7 +45,7 @@ pub async fn get_one_message(
 
     let get_item_input = GetItemInput {
         table_name,
-        key: item_key,
+        key,
         projection_expression: fields_to_get_csv,
         ..Default::default()
     };
