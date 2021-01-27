@@ -16,18 +16,15 @@ pub fn api_index() -> JsonValue {
     })
 }
 
-#[get("/api/messages")]
+#[get("/api/messages?<fields>")]
 pub fn get_all_messages(
+    fields: Option<String>,
     creds_provider: State<AutoRefreshingProvider<CustomStsProvider>>,
 ) -> JsonValue {
     let region = crate::appenv::region();
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let client = crate::sdk::get_dynamo_client((*creds_provider.get_ref()).clone(), region);
-    let messages_future = crate::dal::get_all_messages(
-        client,
-        crate::appenv::table_name(),
-        Some("createdAt,content".to_string()),
-    );
+    let messages_future = crate::dal::get_all_messages(client, crate::appenv::table_name(), fields);
     let messages = runtime.block_on(messages_future);
     json!(messages)
 }
