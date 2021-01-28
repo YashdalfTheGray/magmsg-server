@@ -1,6 +1,10 @@
 use std::collections::HashMap;
 
-use rusoto_dynamodb::{AttributeValue, DynamoDb, DynamoDbClient, GetItemInput, ScanInput};
+use rusoto_core::RusotoError;
+use rusoto_dynamodb::{
+    AttributeValue, DynamoDb, DynamoDbClient, GetItemInput, PutItemError, PutItemInput,
+    PutItemOutput, ScanInput,
+};
 
 use crate::constants::*;
 use crate::message::Message;
@@ -57,4 +61,21 @@ pub async fn get_one_message(
             None => Message::not_found(message_id.to_string()),
         },
     )
+}
+
+pub async fn put_message(
+    client: DynamoDbClient,
+    table_name: String,
+    message: String,
+    author: String,
+) -> Result<PutItemOutput, RusotoError<PutItemError>> {
+    let message_to_put = Message::new(message, author);
+    let ddb_item: HashMap<String, AttributeValue> = message_to_put.clone().into();
+    let put_item_input = PutItemInput {
+        table_name,
+        item: ddb_item,
+        ..Default::default()
+    };
+
+    client.put_item(put_item_input).await
 }
