@@ -1,9 +1,12 @@
+use std::collections::HashMap;
+
 use rocket::{http::Status, State};
 use rocket_contrib::json::{Json, JsonValue};
 use rusoto_credential::AutoRefreshingProvider;
+use rusoto_dynamodb::AttributeValue;
 
-use crate::message_request::MessageRequest;
 use crate::sdk::CustomStsProvider;
+use crate::{message::Message, message_request::MessageRequest};
 
 #[get("/")]
 pub fn index() -> &'static str {
@@ -30,13 +33,20 @@ pub fn get_all_messages(
     json!(messages)
 }
 
-#[put(
-    "/api/messages",
-    format = "application/json",
-    data = "<message_request>"
-)]
-pub fn add_new_message(message_request: Json<MessageRequest>) -> Status {
-    println!("{:#?}", message_request);
+#[put("/api/messages", format = "application/json", data = "<request_json>")]
+pub fn add_new_message(
+    request_json: Json<MessageRequest>,
+    creds_provider: State<AutoRefreshingProvider<CustomStsProvider>>,
+) -> Status {
+    let request = request_json.into_inner();
+    let region = crate::appenv::region();
+    let runtime = tokio::runtime::Runtime::new().unwrap();
+    let client = crate::sdk::get_dynamo_client((*creds_provider.get_ref()).clone(), region);
+    let ddb_item: HashMap<String, AttributeValue> =
+        Message::new(request.get_message(), request.get_author()).into();
+
+    println!("{:#?}", ddb_item);
+
     Status::Created
 }
 
