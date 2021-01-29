@@ -65,38 +65,6 @@ impl ProvideAwsCredentials for CustomStsProvider {
     }
 }
 
-pub async fn get_creds(
-    role_arn: String,
-    external_id: String,
-    region: Region,
-    user_creds_provider: Option<StaticProvider>,
-) -> impl ProvideAwsCredentials {
-    let credentials_provider = match user_creds_provider {
-        Some(cp) => cp,
-        None => crate::appenv::assume_role_user_creds(),
-    };
-    let http_client = rusoto_core::HttpClient::new().unwrap();
-    let arced_client = Arc::new(http_client);
-    let client = StsClient::new_with(arced_client, credentials_provider, region);
-
-    let request: AssumeRoleRequest = AssumeRoleRequest {
-        external_id: Some(external_id),
-        role_arn: role_arn,
-        role_session_name: format!("messages-session-{}", crate::utils::get_time_in_millis()),
-        ..Default::default()
-    };
-
-    let response = client.assume_role(request).await.unwrap();
-    let creds = response.credentials.unwrap();
-
-    StaticProvider::new(
-        creds.access_key_id,
-        creds.secret_access_key,
-        Some(creds.session_token),
-        Some(crate::utils::get_time_to_expire(creds.expiration)),
-    )
-}
-
 pub fn get_dynamo_client<P>(credential_provider: P, region: Region) -> DynamoDbClient
 where
     P: ProvideAwsCredentials + Sync + Send + 'static,

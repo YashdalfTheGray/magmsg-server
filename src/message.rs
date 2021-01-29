@@ -36,10 +36,6 @@ impl Message {
             created_by: "magmsg-server".to_string(),
         }
     }
-
-    pub fn get_uuid(self) -> String {
-        self.message_id.to_string()
-    }
 }
 
 impl From<&HashMap<String, AttributeValue>> for Message {
