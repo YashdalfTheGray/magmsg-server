@@ -42,10 +42,13 @@ pub fn add_new_message(
     let region = crate::appenv::region();
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let client = crate::sdk::get_dynamo_client((*creds_provider.get_ref()).clone(), region);
-    let ddb_item: HashMap<String, AttributeValue> =
-        Message::new(request.get_message(), request.get_author()).into();
-
-    println!("{:#?}", ddb_item);
+    let put_future = crate::dal::put_message(
+        client,
+        crate::appenv::table_name(),
+        request.get_message(),
+        request.get_author(),
+    );
+    let _put_result = runtime.block_on(put_future);
 
     Status::Created
 }
