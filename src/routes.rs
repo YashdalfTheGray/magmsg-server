@@ -1,12 +1,9 @@
-use std::collections::HashMap;
-
 use rocket::{http::Status, State};
 use rocket_contrib::json::{Json, JsonValue};
 use rusoto_credential::AutoRefreshingProvider;
-use rusoto_dynamodb::AttributeValue;
 
+use crate::message_request::MessageRequest;
 use crate::sdk::CustomStsProvider;
-use crate::{message::Message, message_request::MessageRequest};
 
 #[get("/")]
 pub fn index() -> &'static str {
