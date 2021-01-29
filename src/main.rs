@@ -12,6 +12,7 @@ use rocket::config::{Config, Environment};
 use rusoto_credential::AutoRefreshingProvider;
 
 mod appenv;
+mod authenticator;
 mod catchers;
 mod constants;
 mod dal;
