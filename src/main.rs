@@ -48,8 +48,11 @@ fn main() {
                 routes::index,
                 routes::api_index,
                 routes::get_all_messages,
+                routes::get_all_messages_no_auth,
                 routes::add_new_message,
-                routes::get_one_message
+                routes::add_new_message_no_auth,
+                routes::get_one_message,
+                routes::get_one_message_no_auth,
             ],
         )
         .register(catchers![

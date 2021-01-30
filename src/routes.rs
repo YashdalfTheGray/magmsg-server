@@ -31,9 +31,15 @@ pub fn get_all_messages(
     json!(messages)
 }
 
+#[get("/api/messages", rank = 2)]
+pub fn get_all_messages_no_auth() -> Status {
+    Status::Unauthorized
+}
+
 #[put("/api/messages", format = "application/json", data = "<request_json>")]
 pub fn add_new_message(
     request_json: Json<MessageRequest>,
+    _auth: Authenticator,
     creds_provider: State<AutoRefreshingProvider<CustomStsProvider>>,
 ) -> Status {
     let request = request_json.into_inner();
@@ -51,10 +57,16 @@ pub fn add_new_message(
     Status::Created
 }
 
+#[put("/api/messages", rank = 2)]
+pub fn add_new_message_no_auth() -> Status {
+    Status::Unauthorized
+}
+
 #[get("/api/messages/<uuid>?<fields>")]
 pub fn get_one_message(
     uuid: String,
     fields: Option<String>,
+    _auth: Authenticator,
     creds_provider: State<AutoRefreshingProvider<CustomStsProvider>>,
 ) -> JsonValue {
     let region = crate::appenv::region();
@@ -64,4 +76,9 @@ pub fn get_one_message(
         crate::dal::get_one_message(client, crate::appenv::table_name(), uuid, fields);
     let message = runtime.block_on(message_future);
     json!(message)
+}
+
+#[get("/api/messages/<_uuid>", rank = 2)]
+pub fn get_one_message_no_auth(_uuid: String) -> Status {
+    Status::Unauthorized
 }
