@@ -53,9 +53,10 @@ fn main() {
             ],
         )
         .register(catchers![
+            catchers::bad_request,
+            catchers::unauthorized,
             catchers::not_found,
             catchers::internal_error,
-            catchers::bad_request
         ])
         .launch();
 }
