@@ -5,7 +5,7 @@ use rocket::{
 };
 
 #[derive(Debug)]
-enum AuthError {
+pub enum AuthError {
     Malformed,
     Missing,
     Invalid,
@@ -16,7 +16,7 @@ fn is_valid(key: String) -> bool {
 }
 
 #[derive(Debug)]
-struct Authenticator {
+pub struct Authenticator {
     api_key: String,
 }
 

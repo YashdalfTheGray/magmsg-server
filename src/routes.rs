@@ -2,8 +2,8 @@ use rocket::{http::Status, State};
 use rocket_contrib::json::{Json, JsonValue};
 use rusoto_credential::AutoRefreshingProvider;
 
-use crate::message_request::MessageRequest;
 use crate::sdk::CustomStsProvider;
+use crate::{authenticator::Authenticator, message_request::MessageRequest};
 
 #[get("/")]
 pub fn index() -> &'static str {
@@ -20,6 +20,7 @@ pub fn api_index() -> JsonValue {
 #[get("/api/messages?<fields>")]
 pub fn get_all_messages(
     fields: Option<String>,
+    _auth: Authenticator,
     creds_provider: State<AutoRefreshingProvider<CustomStsProvider>>,
 ) -> JsonValue {
     let region = crate::appenv::region();
