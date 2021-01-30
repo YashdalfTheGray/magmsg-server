@@ -5,20 +5,18 @@ use rocket::{
 
 #[derive(Debug)]
 enum AuthError {
-    BadFormat,
+    Malformed,
     Missing,
     Invalid,
+}
+
+fn is_valid(key: String) -> bool {
+    key == crate::appenv::user_access_token()
 }
 
 #[derive(Debug)]
 struct Authenticator {
     api_key: String,
-}
-
-impl Authenticator {
-    pub fn is_valid(&self) -> bool {
-        self.api_key == crate::appenv::user_access_token()
-    }
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for Authenticator {
