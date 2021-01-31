@@ -24,7 +24,10 @@ impl<'a, 'r> FromRequest<'a, 'r> for Authenticator {
     type Error = AuthError;
 
     fn from_request(request: &'a Request<'r>) -> Outcome<Self, Self::Error> {
-        let header_values = request.headers().get("x-api-key").collect::<Vec<_>>();
+        let header_values = request
+            .headers()
+            .get(&crate::appenv::auth_header_key())
+            .collect::<Vec<_>>();
 
         match header_values.len() {
             0 => Outcome::Failure((Status::Unauthorized, AuthError::Missing)),
