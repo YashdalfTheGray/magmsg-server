@@ -64,7 +64,7 @@ pub fn determine_status() -> JsonValue {
         !creds.get_aws_access_key_id().is_empty() && !creds.get_aws_secret_access_key().is_empty();
     let auth_found = !auth_header_key().is_empty() && !user_access_token().is_empty();
     let creds_found = user_found && !assume_role_arn().is_empty();
-    let table_found = table_name().is_empty() && !region().name().is_empty();
+    let table_found = !table_name().is_empty() && !region().name().is_empty();
 
     json!({
         "status": if auth_found && creds_found && table_found {
