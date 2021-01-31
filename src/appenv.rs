@@ -46,3 +46,8 @@ pub fn user_access_token() -> String {
     env::var("USER_ACCESS_TOKEN")
         .expect("Environment variable USER_ACCESS_TOKEN is required to be defined.")
 }
+
+pub fn auth_header_key() -> String {
+    env::var("AUTH_HEADER_KEY")
+        .expect("Environment variable AUTH_HEADER_KEY is required to be defined.")
+}
