@@ -1,7 +1,10 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use chrono::prelude::*;
+use rocket_contrib::json::JsonValue;
 use rusoto_dynamodb::AttributeValue;
+
+use crate::appenv::*;
 
 pub fn get_time_in_millis() -> u128 {
     let start = SystemTime::now();
@@ -53,4 +56,21 @@ pub fn wrap_number_in_attribute_value(num: u128) -> AttributeValue {
         n: Some(num.to_string()),
         ..AttributeValue::default()
     }
+}
+
+pub fn determine_status() -> JsonValue {
+    let creds = assume_role_user_creds();
+    let user_found =
+        !creds.get_aws_access_key_id().is_empty() && !creds.get_aws_secret_access_key().is_empty();
+    let auth_found = !auth_header_key().is_empty() && !user_access_token().is_empty();
+    let creds_found = user_found && !assume_role_arn().is_empty();
+    let table_found = table_name().is_empty() && !region().name().is_empty();
+
+    json!({
+        "status": if auth_found && creds_found && table_found {
+            "okay"
+        } else {
+            "error"
+        }
+    })
 }
