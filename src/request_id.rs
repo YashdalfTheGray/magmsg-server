@@ -3,6 +3,7 @@ use rocket::{
     Request,
 };
 
+#[derive(Debug)]
 pub struct RequestId(pub String);
 
 impl<'a, 'r> FromRequest<'a, 'r> for &'a RequestId {

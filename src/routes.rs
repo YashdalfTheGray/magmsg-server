@@ -2,6 +2,7 @@ use rocket::{http::Status, State};
 use rocket_contrib::json::{Json, JsonValue};
 use rusoto_credential::AutoRefreshingProvider;
 
+use crate::request_id::RequestId;
 use crate::sdk::CustomStsProvider;
 use crate::utils::determine_status;
 use crate::{authenticator::Authenticator, message_request::MessageRequest};
@@ -12,7 +13,8 @@ pub fn index() -> &'static str {
 }
 
 #[get("/api")]
-pub fn api_index() -> JsonValue {
+pub fn api_index(id: &RequestId) -> JsonValue {
+    println!("{}", id.0);
     determine_status()
 }
 
