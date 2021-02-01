@@ -19,6 +19,7 @@ mod constants;
 mod dal;
 mod message;
 mod message_request;
+mod request_id;
 mod routes;
 mod sdk;
 mod utils;
