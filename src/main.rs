@@ -9,6 +9,7 @@ extern crate dotenv;
 
 use dotenv::dotenv;
 use rocket::config::{Config, Environment};
+use rocket_contrib::helmet::SpaceHelmet;
 use rusoto_credential::AutoRefreshingProvider;
 
 mod appenv;
@@ -41,6 +42,7 @@ fn main() {
         .expect("Something went wrong while crating a creds provider");
 
     rocket::custom(config)
+        .attach(SpaceHelmet::default())
         .manage(auto_creds_provider)
         .mount(
             "/",
