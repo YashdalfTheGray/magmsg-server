@@ -37,6 +37,7 @@ impl Fairing for RequestId {
     }
 
     fn on_response(&self, request: &Request, response: &mut Response) {
-        todo!();
+        let id = request.local_cache(|| RequestId::nil());
+        response.set_raw_header("X-Request-ID", id.0.clone());
     }
 }
