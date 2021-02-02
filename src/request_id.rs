@@ -8,6 +8,12 @@ use rocket::{
 #[derive(Debug)]
 pub struct RequestId(pub String);
 
+impl RequestId {
+    pub fn nil() -> RequestId {
+        RequestId(uuid::Uuid::nil().to_string())
+    }
+}
+
 impl<'a, 'r> FromRequest<'a, 'r> for &'a RequestId {
     type Error = ();
 
