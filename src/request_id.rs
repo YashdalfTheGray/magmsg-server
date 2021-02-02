@@ -8,12 +8,6 @@ use rocket::{
 #[derive(Debug)]
 pub struct RequestId(pub String);
 
-impl<'a> Into<Header<'a>> for RequestId {
-    fn into(self) -> Header<'a> {
-        Header::new("X-Request-ID", self.0.clone())
-    }
-}
-
 impl<'a, 'r> FromRequest<'a, 'r> for &'a RequestId {
     type Error = ();
 
