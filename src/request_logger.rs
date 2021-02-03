@@ -1,17 +1,23 @@
 use std::fs::{File, OpenOptions};
 
-pub struct RequestLog {
+pub struct RequestLogger {
     file: File,
 }
 
-impl RequestLog {
-    pub fn new(filename: String) -> RequestLog {
+impl RequestLogger {
+    pub fn new(filename: String) -> RequestLogger {
         let file = OpenOptions::new()
             .create(true)
             .append(true)
             .open(filename)
             .unwrap();
 
-        RequestLog { file }
+        RequestLogger { file }
+    }
+}
+
+impl Default for RequestLogger {
+    fn default() -> Self {
+        RequestLogger::new(String::from("logs/requests.log"))
     }
 }
