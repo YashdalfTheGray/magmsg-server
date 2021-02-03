@@ -1,10 +1,11 @@
 use std::fs::{File, OpenOptions};
 
 use rocket::{
-    fairing::{Fairing, Info},
+    fairing::{Fairing, Info, Kind},
     Data, Request, Response,
 };
 
+#[derive(Debug)]
 pub struct RequestLogger {
     file: File,
 }
@@ -29,7 +30,10 @@ impl Default for RequestLogger {
 
 impl Fairing for RequestLogger {
     fn info(&self) -> Info {
-        todo!();
+        Info {
+            name: "Request logger",
+            kind: Kind::Request | Kind::Response,
+        }
     }
 
     fn on_request(&self, request: &mut Request, data: &Data) {

@@ -17,6 +17,7 @@ mod authenticator;
 mod catchers;
 mod constants;
 mod dal;
+mod log_line;
 mod message;
 mod message_request;
 mod request_id;
