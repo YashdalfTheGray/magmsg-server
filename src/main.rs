@@ -20,6 +20,7 @@ mod dal;
 mod message;
 mod message_request;
 mod request_id;
+mod request_logger;
 mod routes;
 mod sdk;
 mod utils;
