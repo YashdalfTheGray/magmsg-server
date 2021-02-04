@@ -39,7 +39,8 @@ impl Fairing for RequestLogger {
     }
 
     fn on_request(&self, request: &mut Request, data: &Data) {
-        let log_line = LogLine::from(request.clone());
+        let mut log_line = LogLine::from(request.clone());
+        log_line.set_data_size(data.peek().len());
         request.local_cache(|| log_line);
     }
 
