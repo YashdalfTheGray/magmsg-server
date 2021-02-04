@@ -46,7 +46,8 @@ fn main() {
 
     rocket::custom(config)
         .attach(SpaceHelmet::default())
-        .attach(crate::request_id::RequestId::default())
+        .attach(request_id::RequestId::default())
+        .attach(request_logger::RequestLogger::default())
         .manage(auto_creds_provider)
         .mount(
             "/",
