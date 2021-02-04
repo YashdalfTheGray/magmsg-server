@@ -5,6 +5,8 @@ use rocket::{
     Data, Request, Response,
 };
 
+use crate::log_line::LogLine;
+
 #[derive(Debug)]
 pub struct RequestLogger {
     file: File,
@@ -37,10 +39,8 @@ impl Fairing for RequestLogger {
     }
 
     fn on_request(&self, request: &mut Request, data: &Data) {
-        todo!();
+        request.local_cache(|| LogLine::from(request.clone()));
     }
 
-    fn on_response(&self, request: &Request, response: &mut Response) {
-        todo!();
-    }
+    fn on_response(&self, request: &Request, response: &mut Response) {}
 }
