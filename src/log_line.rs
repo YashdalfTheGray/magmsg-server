@@ -1,6 +1,6 @@
 use std::net::IpAddr;
 
-use chrono::{offset::Utc, DateTime, Duration};
+use chrono::{offset::Utc, DateTime, Duration, NaiveDateTime};
 use rocket::{http::Method, Request};
 
 #[derive(Debug)]
@@ -16,6 +16,19 @@ pub struct LogLine {
 }
 
 impl LogLine {
+    pub fn empty() -> Self {
+        LogLine {
+            request_id: String::from(""),
+            path: String::from(""),
+            method: Method::Options,
+            client_addr: None,
+            received_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
+            responded_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
+            duration: Duration::seconds(0),
+            data_length: 0,
+        }
+    }
+
     pub fn set_data_size(&mut self, len: usize) {
         self.data_length = len;
     }
