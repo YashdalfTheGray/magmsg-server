@@ -21,7 +21,7 @@ pub struct LogLine {
     received_at: DateTime<Utc>,
     responded_at: DateTime<Utc>,
     duration: Duration,
-    data_length: usize,
+    request_data_length: usize,
 }
 
 impl LogLine {
@@ -34,12 +34,12 @@ impl LogLine {
             received_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
             responded_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
             duration: Duration::seconds(0),
-            data_length: 0,
+            request_data_length: 0,
         }
     }
 
-    pub fn set_data_size(&mut self, len: usize) {
-        self.data_length = len;
+    pub fn set_request_data_size(&mut self, len: usize) {
+        self.request_data_length = len;
     }
 }
 
@@ -59,7 +59,7 @@ impl From<Request<'_>> for LogLine {
             received_at: Utc::now(),
             responded_at: Utc::now(),
             duration: Duration::seconds(0),
-            data_length: 0,
+            request_data_length: 0,
         }
     }
 }
