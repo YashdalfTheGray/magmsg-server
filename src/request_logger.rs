@@ -45,7 +45,8 @@ impl Fairing for RequestLogger {
     }
 
     fn on_response(&self, request: &Request, response: &mut Response) {
-        let log_line = request.local_cache(|| LogLine::empty());
+        let mut log_line = request.local_cache(|| LogLine::empty()).clone();
+        log_line.set_responded_at_to_now();
         println!("{:#?}", log_line);
     }
 }

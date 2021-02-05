@@ -12,7 +12,7 @@ pub enum LogFormat {
     Tiny,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct LogLine {
     request_id: String,
     path: String,
@@ -22,6 +22,7 @@ pub struct LogLine {
     responded_at: DateTime<Utc>,
     duration: Duration,
     request_data_length: usize,
+    response_data_length: usize,
 }
 
 impl LogLine {
@@ -35,11 +36,26 @@ impl LogLine {
             responded_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
             duration: Duration::seconds(0),
             request_data_length: 0,
+            response_data_length: 0,
         }
     }
 
     pub fn set_request_data_size(&mut self, len: usize) {
         self.request_data_length = len;
+    }
+
+    pub fn set_response_data_size(&mut self, len: usize) {
+        self.response_data_length = len;
+    }
+
+    pub fn set_responded_at_time(&mut self, responded_at_time: DateTime<Utc>) {
+        self.responded_at = responded_at_time;
+        self.duration = self.responded_at.signed_duration_since(self.received_at);
+    }
+
+    pub fn set_responded_at_to_now(&mut self) {
+        self.responded_at = Utc::now();
+        self.duration = self.responded_at.signed_duration_since(self.received_at);
     }
 }
 
@@ -60,6 +76,7 @@ impl From<Request<'_>> for LogLine {
             responded_at: Utc::now(),
             duration: Duration::seconds(0),
             request_data_length: 0,
+            response_data_length: 0,
         }
     }
 }
