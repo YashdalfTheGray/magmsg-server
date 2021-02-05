@@ -1,7 +1,16 @@
+use std::fmt::{self, Formatter};
 use std::net::IpAddr;
 
 use chrono::{offset::Utc, DateTime, Duration, NaiveDateTime};
 use rocket::{http::Method, Request};
+
+pub enum LogFormat {
+    ApacheStandard,
+    ApacheCommon,
+    Dev,
+    Short,
+    Tiny,
+}
 
 #[derive(Debug)]
 pub struct LogLine {
@@ -31,6 +40,12 @@ impl LogLine {
 
     pub fn set_data_size(&mut self, len: usize) {
         self.data_length = len;
+    }
+}
+
+impl fmt::Display for LogLine {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "log line goes here")
     }
 }
 
