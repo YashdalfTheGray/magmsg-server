@@ -61,6 +61,10 @@ impl LogLine {
         self.responded_at = Utc::now();
         self.duration = self.responded_at.signed_duration_since(self.received_at);
     }
+
+    pub fn set_logging_format(&mut self, format: LogFormat) {
+        self.format = format;
+    }
 }
 
 impl fmt::Display for LogLine {
