@@ -69,7 +69,14 @@ impl LogLine {
 
 impl fmt::Display for LogLine {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "log line goes here")
+        match self.format {
+            LogFormat::ApacheCommon => write!(f, "ApacheCommon log line"),
+            LogFormat::ApacheStandard => write!(f, "ApacheStandard log line"),
+            LogFormat::Dev => write!(f, "Dev log line"),
+            LogFormat::None => write!(f, "<log silenced>"),
+            LogFormat::Short => write!(f, "Short log line"),
+            LogFormat::Tiny => write!(f, "Tiny log line"),
+        }
     }
 }
 
