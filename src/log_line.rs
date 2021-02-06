@@ -58,8 +58,7 @@ impl LogLine {
     }
 
     pub fn set_responded_at_to_now(&mut self) {
-        self.responded_at = Utc::now();
-        self.duration = self.responded_at.signed_duration_since(self.received_at);
+        self.set_responded_at_time(Utc::now());
     }
 
     pub fn set_logging_format(&mut self, format: LogFormat) {
