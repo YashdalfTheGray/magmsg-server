@@ -11,7 +11,7 @@ pub enum LogFormat {
     Dev,
     Short,
     Tiny,
-    None,
+    Default,
 }
 
 #[derive(Debug, Clone)]
@@ -40,7 +40,7 @@ impl LogLine {
             duration: Duration::seconds(0),
             request_data_length: 0,
             response_data_length: 0,
-            format: LogFormat::None,
+            format: LogFormat::Default,
         }
     }
 
@@ -72,8 +72,8 @@ impl fmt::Display for LogLine {
         match self.format {
             LogFormat::ApacheCommon => write!(f, "ApacheCommon log line"),
             LogFormat::ApacheStandard => write!(f, "ApacheStandard log line"),
+            LogFormat::Default => write!(f, "Default log line"),
             LogFormat::Dev => write!(f, "Dev log line"),
-            LogFormat::None => write!(f, "<log silenced>"),
             LogFormat::Short => write!(f, "Short log line"),
             LogFormat::Tiny => write!(f, "Tiny log line"),
         }
@@ -92,7 +92,7 @@ impl From<Request<'_>> for LogLine {
             duration: Duration::seconds(0),
             request_data_length: 0,
             response_data_length: 0,
-            format: LogFormat::None,
+            format: LogFormat::Default,
         }
     }
 }

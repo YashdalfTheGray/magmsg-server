@@ -3,6 +3,8 @@ use std::env;
 use rusoto_core::Region;
 use rusoto_credential::StaticProvider;
 
+use crate::log_line::LogFormat;
+
 pub fn port() -> u16 {
     match env::var("PORT") {
         Ok(p) => p.parse::<u16>().unwrap_or(8080),
@@ -50,4 +52,19 @@ pub fn user_access_token() -> String {
 pub fn auth_header_key() -> String {
     env::var("AUTH_HEADER_KEY")
         .expect("Environment variable AUTH_HEADER_KEY is required to be defined.")
+}
+
+pub fn log_format() -> LogFormat {
+    match env::var("LOG_FORMAT") {
+        Ok(format) => match &(format.to_lowercase())[..] {
+            "apachecommon" => LogFormat::ApacheCommon,
+            "apachestandard" => LogFormat::ApacheStandard,
+            "default" => LogFormat::Default,
+            "dev" => LogFormat::Dev,
+            "short" => LogFormat::Short,
+            "tiny" => LogFormat::Tiny,
+            "" | &_ => LogFormat::Default,
+        },
+        Err(_) => LogFormat::Default,
+    }
 }
