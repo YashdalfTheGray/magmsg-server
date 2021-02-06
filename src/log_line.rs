@@ -4,12 +4,14 @@ use std::net::IpAddr;
 use chrono::{offset::Utc, DateTime, Duration, NaiveDateTime};
 use rocket::{http::Method, Request};
 
+#[derive(Debug, Clone)]
 pub enum LogFormat {
     ApacheStandard,
     ApacheCommon,
     Dev,
     Short,
     Tiny,
+    None,
 }
 
 #[derive(Debug, Clone)]
@@ -23,6 +25,7 @@ pub struct LogLine {
     duration: Duration,
     request_data_length: usize,
     response_data_length: usize,
+    format: LogFormat,
 }
 
 impl LogLine {
@@ -37,6 +40,7 @@ impl LogLine {
             duration: Duration::seconds(0),
             request_data_length: 0,
             response_data_length: 0,
+            format: LogFormat::None,
         }
     }
 
@@ -77,6 +81,7 @@ impl From<Request<'_>> for LogLine {
             duration: Duration::seconds(0),
             request_data_length: 0,
             response_data_length: 0,
+            format: LogFormat::None,
         }
     }
 }
