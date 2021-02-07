@@ -56,6 +56,7 @@ impl Fairing for RequestLogger {
             Some(str) => str.len(),
             None => 0,
         });
+        log_line.set_status(response.status());
         println!("{:#?}", log_line);
     }
 }

@@ -35,16 +35,16 @@ pub struct LogLine {
 impl LogLine {
     pub fn empty() -> Self {
         LogLine {
-            request_id: String::from(""),
-            path: String::from(""),
-            method: Method::Options,
             client_addr: None,
-            received_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
-            responded_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
             duration: Duration::seconds(0),
-            request_data_length: 0,
-            response_data_length: 0,
             format: LogFormat::Default,
+            method: Method::Options,
+            path: String::from(""),
+            received_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
+            request_data_length: 0,
+            request_id: String::from(""),
+            responded_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
+            response_data_length: 0,
             status: Status::Ok,
         }
     }
@@ -69,16 +69,20 @@ impl LogLine {
     pub fn set_logging_format(&mut self, format: LogFormat) {
         self.format = format;
     }
+
+    pub fn set_status(&mut self, status: Status) {
+        self.status = status;
+    }
 }
 
 impl fmt::Display for LogLine {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self.format {
-            LogFormat::ApacheCommon => write!(f, ":remote-addr - :remote-user [:date[clf]] \":method :url HTTP/:http-version\" :status :res[content-length]"),
-            LogFormat::ApacheStandard => write!(f, ":remote-addr - :remote-user [:date[clf]] \":method :url HTTP/:http-version\" :status :res[content-length] \":referrer\" \":user-agent\""),
+            LogFormat::ApacheCommon => write!(f, ":remote-addr - :remote-user [:date[clf]] \":method :url\" :status :res[content-length]"),
+            LogFormat::ApacheStandard => write!(f, ":remote-addr - :remote-user [:date[clf]] \":method :url\" :status :res[content-length] \":referrer\" \":user-agent\""),
             LogFormat::Default => write!(f, "Default log line"),
             LogFormat::Dev => write!(f, ":method :url :status :response-time ms - :res[content-length]"),
-            LogFormat::Short => write!(f, ":remote-addr :remote-user :method :url HTTP/:http-version :status :res[content-length] - :response-time ms"),
+            LogFormat::Short => write!(f, ":remote-addr :remote-user :method :url :status :res[content-length] - :response-time ms"),
             LogFormat::Tiny => write!(f, ":method :url :status :res[content-length] - :response-time ms"),
         }
     }
@@ -87,16 +91,16 @@ impl fmt::Display for LogLine {
 impl From<Request<'_>> for LogLine {
     fn from(req: Request) -> Self {
         LogLine {
-            request_id: req.local_cache(|| uuid::Uuid::nil().to_string()).clone(),
-            path: req.uri().to_string(),
-            method: req.method(),
             client_addr: req.client_ip(),
-            received_at: Utc::now(),
-            responded_at: Utc::now(),
             duration: Duration::seconds(0),
-            request_data_length: 0,
-            response_data_length: 0,
             format: LogFormat::Default,
+            method: req.method(),
+            path: req.uri().to_string(),
+            received_at: Utc::now(),
+            request_data_length: 0,
+            request_id: req.local_cache(|| uuid::Uuid::nil().to_string()).clone(),
+            responded_at: Utc::now(),
+            response_data_length: 0,
             status: Status::Ok,
         }
     }
