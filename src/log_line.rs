@@ -47,11 +47,11 @@ impl LogLine {
         }
     }
 
-    pub fn set_request_data_size(&mut self, len: usize) {
+    pub fn _set_request_data_size(&mut self, len: usize) {
         self.request_data_length = len;
     }
 
-    pub fn set_response_data_size(&mut self, len: usize) {
+    pub fn _set_response_data_size(&mut self, len: usize) {
         self.response_data_length = len;
     }
 
