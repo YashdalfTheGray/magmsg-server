@@ -57,14 +57,12 @@ pub fn auth_header_key() -> String {
 pub fn log_format() -> LogFormat {
     match env::var("LOG_FORMAT") {
         Ok(format) => match &(format.to_lowercase())[..] {
-            "apachecommon" => LogFormat::ApacheCommon,
-            "apachestandard" => LogFormat::ApacheStandard,
-            "default" => LogFormat::Default,
+            "standard" => LogFormat::Standard,
             "dev" => LogFormat::Dev,
             "short" => LogFormat::Short,
             "tiny" => LogFormat::Tiny,
-            "" | &_ => LogFormat::Default,
+            "" | &_ => LogFormat::Standard,
         },
-        Err(_) => LogFormat::Default,
+        Err(_) => LogFormat::Standard,
     }
 }

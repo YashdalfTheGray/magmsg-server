@@ -9,12 +9,10 @@ use rocket::{
 
 #[derive(Debug, Clone)]
 pub enum LogFormat {
-    ApacheStandard,
-    ApacheCommon,
+    Standard,
     Dev,
     Short,
     Tiny,
-    Default,
 }
 
 #[derive(Debug, Clone)]
@@ -37,7 +35,7 @@ impl LogLine {
         LogLine {
             client_addr: None,
             duration: Duration::seconds(0),
-            format: LogFormat::Default,
+            format: LogFormat::Standard,
             method: Method::Options,
             path: String::from(""),
             received_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
@@ -78,12 +76,22 @@ impl LogLine {
 impl fmt::Display for LogLine {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self.format {
-            LogFormat::ApacheCommon => write!(f, ":remote-addr - :remote-user [:date[clf]] \":method :url\" :status :res[content-length]"),
-            LogFormat::ApacheStandard => write!(f, ":remote-addr - :remote-user [:date[clf]] \":method :url\" :status :res[content-length] \":referrer\" \":user-agent\""),
-            LogFormat::Default => write!(f, "Default log line"),
-            LogFormat::Dev => write!(f, ":method :url :status :response-time ms - :res[content-length]"),
-            LogFormat::Short => write!(f, ":remote-addr :remote-user :method :url :status :res[content-length] - :response-time ms"),
-            LogFormat::Tiny => write!(f, ":method :url :status :res[content-length] - :response-time ms"),
+            LogFormat::Standard => write!(
+                f,
+                ":remote-addr [:date[clf]] \":method :url\" :status :res[content-length]"
+            ),
+            LogFormat::Dev => write!(
+                f,
+                ":method :url :status :response-time ms - :res[content-length]"
+            ),
+            LogFormat::Short => write!(
+                f,
+                ":remote-addr  :method :url :status :res[content-length] - :response-time ms"
+            ),
+            LogFormat::Tiny => write!(
+                f,
+                ":method :url :status :res[content-length] - :response-time ms"
+            ),
         }
     }
 }
@@ -93,7 +101,7 @@ impl From<Request<'_>> for LogLine {
         LogLine {
             client_addr: req.client_ip(),
             duration: Duration::seconds(0),
-            format: LogFormat::Default,
+            format: LogFormat::Standard,
             method: req.method(),
             path: req.uri().to_string(),
             received_at: Utc::now(),
