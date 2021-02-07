@@ -2,7 +2,10 @@ use std::fmt::{self, Formatter};
 use std::net::IpAddr;
 
 use chrono::{offset::Utc, DateTime, Duration, NaiveDateTime};
-use rocket::{http::Method, Request};
+use rocket::{
+    http::{Method, Status},
+    Request,
+};
 
 #[derive(Debug, Clone)]
 pub enum LogFormat {
@@ -16,16 +19,17 @@ pub enum LogFormat {
 
 #[derive(Debug, Clone)]
 pub struct LogLine {
-    request_id: String,
-    path: String,
-    method: Method,
     client_addr: Option<IpAddr>,
-    received_at: DateTime<Utc>,
-    responded_at: DateTime<Utc>,
     duration: Duration,
-    request_data_length: usize,
-    response_data_length: usize,
     format: LogFormat,
+    method: Method,
+    path: String,
+    received_at: DateTime<Utc>,
+    request_data_length: usize,
+    request_id: String,
+    responded_at: DateTime<Utc>,
+    response_data_length: usize,
+    status: Status,
 }
 
 impl LogLine {
@@ -41,6 +45,7 @@ impl LogLine {
             request_data_length: 0,
             response_data_length: 0,
             format: LogFormat::Default,
+            status: Status::Ok,
         }
     }
 
@@ -69,12 +74,12 @@ impl LogLine {
 impl fmt::Display for LogLine {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self.format {
-            LogFormat::ApacheCommon => write!(f, "ApacheCommon log line"),
-            LogFormat::ApacheStandard => write!(f, "ApacheStandard log line"),
+            LogFormat::ApacheCommon => write!(f, ":remote-addr - :remote-user [:date[clf]] \":method :url HTTP/:http-version\" :status :res[content-length]"),
+            LogFormat::ApacheStandard => write!(f, ":remote-addr - :remote-user [:date[clf]] \":method :url HTTP/:http-version\" :status :res[content-length] \":referrer\" \":user-agent\""),
             LogFormat::Default => write!(f, "Default log line"),
-            LogFormat::Dev => write!(f, "Dev log line"),
-            LogFormat::Short => write!(f, "Short log line"),
-            LogFormat::Tiny => write!(f, "Tiny log line"),
+            LogFormat::Dev => write!(f, ":method :url :status :response-time ms - :res[content-length]"),
+            LogFormat::Short => write!(f, ":remote-addr :remote-user :method :url HTTP/:http-version :status :res[content-length] - :response-time ms"),
+            LogFormat::Tiny => write!(f, ":method :url :status :res[content-length] - :response-time ms"),
         }
     }
 }
@@ -92,6 +97,7 @@ impl From<Request<'_>> for LogLine {
             request_data_length: 0,
             response_data_length: 0,
             format: LogFormat::Default,
+            status: Status::Ok,
         }
     }
 }
