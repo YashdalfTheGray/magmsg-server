@@ -78,7 +78,17 @@ impl fmt::Display for LogLine {
         match self.format {
             LogFormat::Standard => write!(
                 f,
-                ":remote-addr [:date[clf]] \":method :url\" :status :res[content-length]"
+                "{client_addr} [{date}] \"{method} {uri}\" {status} {response_length} - {response_time}ms",
+                client_addr = match self.client_addr {
+                    Some(ip) => ip.to_string(),
+                    None => String::from(""),
+                },
+                date = self.received_at.to_rfc3339(),
+                method = self.method.to_string(),
+                uri = self.path,
+                status = self.status.to_string(),
+                response_length = self.response_data_length.to_string(),
+                response_time = self.duration.num_milliseconds()
             ),
             LogFormat::Dev => write!(
                 f,
