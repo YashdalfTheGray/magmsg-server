@@ -51,7 +51,7 @@ impl LogLine {
         self.request_data_length = len;
     }
 
-    pub fn _set_response_data_size(&mut self, len: usize) {
+    pub fn set_response_data_size(&mut self, len: usize) {
         self.response_data_length = len;
     }
 

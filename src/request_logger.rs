@@ -47,7 +47,9 @@ impl Fairing for RequestLogger {
 
     fn on_request(&self, request: &mut Request, _data: &Data) {
         let mut log_line = LogLine::from(request.clone());
+
         log_line.set_logging_format(self.format.clone());
+
         request.local_cache(|| log_line);
     }
 
@@ -57,10 +59,12 @@ impl Fairing for RequestLogger {
             Some(body) => body,
             None => String::from(""),
         };
-        log_line._set_response_data_size(body_str.clone().len());
-        response.set_sized_body(Cursor::new(body_str));
+
+        log_line.set_response_data_size(body_str.clone().len());
         log_line.set_responded_at_to_now();
         log_line.set_status(response.status());
-        println!("{}", log_line);
+
+        response.set_sized_body(Cursor::new(body_str));
+        // println!("{}", log_line);
     }
 }
