@@ -92,7 +92,12 @@ impl fmt::Display for LogLine {
             ),
             LogFormat::Dev => write!(
                 f,
-                ":method :url :status :response-time ms - :res[content-length]"
+                "{method} {uri} {status} {response_time}ms - {response_length}",
+                method = self.method.to_string(),
+                uri = self.path,
+                status = self.status.to_string(),
+                response_time = self.duration.num_milliseconds(),
+                response_length = self.response_data_length.to_string(),
             ),
             LogFormat::Short => write!(
                 f,
