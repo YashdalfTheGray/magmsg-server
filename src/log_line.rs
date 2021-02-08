@@ -90,9 +90,9 @@ impl fmt::Display for LogLine {
                 response_length = self.response_data_length.to_string(),
                 response_time = self.duration.num_milliseconds()
             ),
-            LogFormat::Dev => write!(
+            LogFormat::Dev | LogFormat::Tiny => write!(
                 f,
-                "{method} {uri} {status} {response_time}ms - {response_length}",
+                "{method} {uri} {status} {response_length} - {response_time}ms",
                 method = self.method.to_string(),
                 uri = self.path,
                 status = self.status.to_string(),
@@ -101,11 +101,16 @@ impl fmt::Display for LogLine {
             ),
             LogFormat::Short => write!(
                 f,
-                ":remote-addr  :method :url :status :res[content-length] - :response-time ms"
-            ),
-            LogFormat::Tiny => write!(
-                f,
-                ":method :url :status :res[content-length] - :response-time ms"
+                "{client_addr} {method} {uri} {status} {response_length} - {response_time}ms",
+                client_addr = match self.client_addr {
+                    Some(ip) => ip.to_string(),
+                    None => String::from(""),
+                },
+                method = self.method.to_string(),
+                uri = self.path,
+                status = self.status.to_string(),
+                response_length = self.response_data_length.to_string(),
+                response_time = self.duration.num_milliseconds()
             ),
         }
     }
