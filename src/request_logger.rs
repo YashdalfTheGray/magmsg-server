@@ -57,6 +57,7 @@ impl Fairing for RequestLogger {
             Some(body) => body,
             None => String::from(""),
         };
+        log_line._set_response_data_size(body_str.clone().len());
         response.set_sized_body(Cursor::new(body_str));
         log_line.set_responded_at_to_now();
         log_line.set_status(response.status());
