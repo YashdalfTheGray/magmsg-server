@@ -1,4 +1,7 @@
-use std::fs::{File, OpenOptions};
+use std::{
+    fs::{File, OpenOptions},
+    io::Cursor,
+};
 
 use rocket::{
     fairing::{Fairing, Info, Kind},
@@ -50,6 +53,11 @@ impl Fairing for RequestLogger {
 
     fn on_response(&self, request: &Request, response: &mut Response) {
         let mut log_line = request.local_cache(|| LogLine::empty()).clone();
+        let body_str = match response.body_string() {
+            Some(body) => body,
+            None => String::from(""),
+        };
+        response.set_sized_body(Cursor::new(body_str));
         log_line.set_responded_at_to_now();
         log_line.set_status(response.status());
         println!("{}", log_line);
