@@ -4,6 +4,7 @@ use async_trait::async_trait;
 use rusoto_core::Region;
 use rusoto_credential::{AwsCredentials, CredentialsError, ProvideAwsCredentials, StaticProvider};
 use rusoto_dynamodb::DynamoDbClient;
+use rusoto_s3::S3Client;
 use rusoto_sts::{AssumeRoleRequest, Sts, StsClient};
 
 #[derive(Debug, Clone)]
@@ -73,4 +74,14 @@ where
     let arced_client = Arc::new(http_client);
 
     DynamoDbClient::new_with(arced_client, credential_provider, region)
+}
+
+pub fn get_s3_client<P>(credential_provider: P, region: Region) -> S3Client
+where
+    P: ProvideAwsCredentials + Sync + Send + 'static,
+{
+    let http_client = rusoto_core::HttpClient::new().unwrap();
+    let arced_client = Arc::new(http_client);
+
+    S3Client::new_with(arced_client, credential_provider, region)
 }
