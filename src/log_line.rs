@@ -23,7 +23,6 @@ pub struct LogLine {
     method: Method,
     path: String,
     received_at: DateTime<Utc>,
-    request_data_length: usize,
     request_id: String,
     responded_at: DateTime<Utc>,
     response_data_length: usize,
@@ -39,16 +38,11 @@ impl LogLine {
             method: Method::Options,
             path: String::from(""),
             received_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
-            request_data_length: 0,
             request_id: String::from(""),
             responded_at: DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(0, 0), Utc),
             response_data_length: 0,
             status: Status::Ok,
         }
-    }
-
-    pub fn _set_request_data_size(&mut self, len: usize) {
-        self.request_data_length = len;
     }
 
     pub fn set_response_data_size(&mut self, len: usize) {
@@ -125,7 +119,6 @@ impl From<Request<'_>> for LogLine {
             method: req.method(),
             path: req.uri().to_string(),
             received_at: Utc::now(),
-            request_data_length: 0,
             request_id: req.local_cache(|| uuid::Uuid::nil().to_string()).clone(),
             responded_at: Utc::now(),
             response_data_length: 0,
