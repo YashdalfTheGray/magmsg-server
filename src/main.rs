@@ -23,6 +23,7 @@ mod message_request;
 mod request_id;
 mod request_logger;
 mod routes;
+mod s3_logger;
 mod sdk;
 mod utils;
 
