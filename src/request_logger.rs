@@ -1,7 +1,4 @@
-use std::{
-    fs::{File, OpenOptions},
-    io::Cursor,
-};
+use std::io::Cursor;
 
 use rocket::{
     fairing::{Fairing, Info, Kind},
@@ -15,25 +12,18 @@ use crate::{
 
 #[derive(Debug)]
 pub struct RequestLogger {
-    file: File,
     format: LogFormat,
 }
 
 impl RequestLogger {
-    pub fn new(filename: String, format: LogFormat) -> RequestLogger {
-        let file = OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(filename)
-            .unwrap();
-
-        RequestLogger { file, format }
+    pub fn new(format: LogFormat) -> RequestLogger {
+        RequestLogger { format }
     }
 }
 
 impl Default for RequestLogger {
     fn default() -> Self {
-        RequestLogger::new(String::from("logs/requests.log"), appenv::log_format())
+        RequestLogger::new(appenv::log_format())
     }
 }
 
@@ -65,6 +55,5 @@ impl Fairing for RequestLogger {
         log_line.set_status(response.status());
 
         response.set_sized_body(Cursor::new(body_str));
-        // println!("{}", log_line);
     }
 }
