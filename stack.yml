@@ -1,5 +1,5 @@
 ---
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: "2012-10-17"
 Description: AWS CloudFormation template to create the messages stack
 Parameters:
   ExternalId:
@@ -38,6 +38,44 @@ Resources:
           ProvisionedThroughput:
             ReadCapacityUnits: "0"
             WriteCapacityUnits: "0"
+
+  MessagesAppPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: "MessagesAppPolicy"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AllowListTablesAndLimits"
+            Effect: Allow
+            Action:
+              - dynamodb:ListTables
+              - dynamodb:DescribeLimits
+            Resource: "*"
+          - Sid: "AllowTableActions"
+            Effect: Allow
+            Action:
+              - dynamodb:BatchGetItem
+              - dynamodb:BatchWriteItem
+              - dynamodb:ConditionCheckItem
+              - dynamodb:PutItem
+              - dynamodb:DescribeTable
+              - dynamodb:DeleteItem
+              - dynamodb:GetItem
+              - dynamodb:Scan
+              - dynamodb:Query
+              - dynamodb:UpdateItem
+              - dynamodb:UpdateTable
+            Resource: !GetAtt MessagesDdbTable.Arn
+          - Sid: "AllowTableActions"
+            Effect: Allow
+            Action:
+              - dynamodb:Scan
+              - dynamodb:Query
+              - dynamodb:GetRecords
+            Resource:
+              - !Sub "${MessagesDdbTable.Arn}/stream/*"
+              - !Sub "${MessagesDdbTable.Arn}/index/*"
 
   MessagesAccessUser:
     Type: AWS::IAM::User
