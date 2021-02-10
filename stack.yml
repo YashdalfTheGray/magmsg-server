@@ -2,9 +2,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: AWS CloudFormation template to create the messages stack
 Parameters:
-
+  ExternalId:
+    Type: String
+    Description: "The external ID to use in the user permissions policy"
 Resources:
-  myDynamoDBTable:
+  MessagesDdbTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: "messages"
@@ -36,3 +38,21 @@ Resources:
           ProvisionedThroughput:
             ReadCapacityUnits: "0"
             WriteCapacityUnits: "0"
+
+  MessagesAccessUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: "messages-dude"
+      Policy:
+        PolicyName: "message-dude-policy"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: AllowAssumingParticularRole
+              Effect: Allow
+              Action: sts:AssumeRole
+              Resource: !Ref MessagesAppRole
+            - Sid: AllowGetCallerIdentity
+              Effect: Allow
+              Action: sts:GetCallerIdentity
+              Resource: "*"
