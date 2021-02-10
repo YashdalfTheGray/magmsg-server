@@ -14,6 +14,7 @@ AWS_ACCESS_KEY_ID=<aws access id>
 AWS_SECRET_ACCESS_KEY=<aws secret access key>
 AWS_DYNAMO_DB_TABLE_NAME=<the name of the table>
 AWS_ASSUME_ROLE_ARN=<a role to assume to get permissions to table>
+LOGGING_ASSUME_ROLE_ARN=<a role to assume to get permissions to log>
 AWS_REGION=<aws region>
 ```
 
