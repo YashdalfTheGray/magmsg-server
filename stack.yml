@@ -80,6 +80,20 @@ Resources:
               - !Sub "${MessagesDdbTable.Arn}/stream/*"
               - !Sub "${MessagesDdbTable.Arn}/index/*"
 
+  MessagesLogPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: "MessagesAppPolicy"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "RequestLogRolePolicy"
+            Effect: Allow
+            Action: s3:*
+            Resource:
+              - !Sub "arn:aws:s3:::${RequestLogBucketName}/*"
+              - !Sub "arn:aws:s3:::${RequestLogBucketName}"
+
   MessagesAccess:
     Type: AWS::IAM::Role
     Properties:
