@@ -77,6 +77,14 @@ Resources:
               - !Sub "${MessagesDdbTable.Arn}/stream/*"
               - !Sub "${MessagesDdbTable.Arn}/index/*"
 
+  MessagesAccess:
+    Type: AWS::IAM::Role
+    Properties:
+      PolicyName: messages-app-role
+      Description: "a role meant to access the messages table"
+      MaxSessionDuration: 3600
+      ManagedPolicyArns: !Sub "arn:aws:iam::${AWS::AccountId}:policy/${MessagesAppPolicy}"
+
   MessagesAccessUser:
     Type: AWS::IAM::User
     Properties:
