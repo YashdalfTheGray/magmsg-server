@@ -84,6 +84,17 @@ Resources:
       Description: "a role meant to access the messages table"
       MaxSessionDuration: 3600
       ManagedPolicyArns: !Sub "arn:aws:iam::${AWS::AccountId}:policy/${MessagesAppPolicy}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AllowPolicy"
+            Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              AWS: !GetAtt MessagesAccessUser.Arn
+            Condition:
+              StringEquals:
+                "sts:ExternalId": !Ref ExternalId
 
   MessagesAccessUser:
     Type: AWS::IAM::User
