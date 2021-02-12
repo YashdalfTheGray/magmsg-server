@@ -94,13 +94,32 @@ Resources:
               - !Sub "arn:aws:s3:::${RequestLogBucketName}/*"
               - !Sub "arn:aws:s3:::${RequestLogBucketName}"
 
-  MessagesAccess:
+  MessagesAppRole:
     Type: AWS::IAM::Role
     Properties:
       PolicyName: messages-app-role
       Description: "a role meant to access the messages table"
       MaxSessionDuration: 3600
       ManagedPolicyArns: !Sub "arn:aws:iam::${AWS::AccountId}:policy/${MessagesAppPolicy}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AllowPolicy"
+            Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              AWS: !GetAtt MessagesAccessUser.Arn
+            Condition:
+              StringEquals:
+                "sts:ExternalId": !Ref ExternalId
+
+  MessagesLogRole:
+    Type: AWS::IAM::Role
+    Properties:
+      PolicyName: messages-log-role
+      Description: "a role meant to access the messages request logs bucket"
+      MaxSessionDuration: 3600
+      ManagedPolicyArns: !Sub "arn:aws:iam::${AWS::AccountId}:policy/${MessagesLogPolicy}"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
