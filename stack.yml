@@ -5,6 +5,9 @@ Parameters:
   ExternalId:
     Type: String
     Description: "The external ID to use in the user permissions policy"
+  RequestLogBucketName:
+    Type: String
+    Description: "The bucket to store the request logs in"
 Resources:
   MessagesDdbTable:
     Type: AWS::DynamoDB::Table
