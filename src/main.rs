@@ -7,6 +7,9 @@ extern crate rocket_contrib;
 
 extern crate dotenv;
 
+use appenv::{
+    assume_role_arn, assume_role_user_creds, external_id, logging_assume_role_arn, port, region,
+};
 use dotenv::dotenv;
 use rocket::config::{Config, Environment};
 use rocket_contrib::helmet::SpaceHelmet;
@@ -31,25 +34,35 @@ fn main() {
     dotenv().ok();
 
     let config = Config::build(Environment::Development)
-        .port(appenv::port())
+        .port(port())
         .finalize()
         .unwrap();
 
-    let creds_provider = sdk::CustomStsProvider::new(
-        appenv::assume_role_user_creds(),
-        appenv::assume_role_arn(),
-        Some(appenv::external_id()),
-        appenv::region(),
+    let app_creds_provider = sdk::CustomStsProvider::new(
+        assume_role_user_creds(),
+        assume_role_arn(),
+        Some(external_id()),
+        region(),
     );
 
-    let auto_creds_provider = AutoRefreshingProvider::new(creds_provider)
-        .expect("Something went wrong while crating a creds provider");
+    let logs_creds_provider = sdk::CustomStsProvider::new(
+        assume_role_user_creds(),
+        logging_assume_role_arn(),
+        Some(external_id()),
+        region(),
+    );
+
+    let auto_app_creds_provider = AutoRefreshingProvider::new(app_creds_provider)
+        .expect("Something went wrong while creating the app creds provider");
+
+    let auto_logs_creds_provider = AutoRefreshingProvider::new(logs_creds_provider)
+        .expect("Something went wrong while creating the logging creds provider");
 
     rocket::custom(config)
         .attach(SpaceHelmet::default())
         .attach(request_id::RequestId::default())
         .attach(request_logger::RequestLogger::default())
-        .manage(auto_creds_provider)
+        .manage(auto_app_creds_provider)
         .mount(
             "/",
             routes![
