@@ -58,6 +58,13 @@ pub fn auth_header_key() -> String {
         .expect("Environment variable AUTH_HEADER_KEY is required to be defined.")
 }
 
+pub fn logging_bucket_name() -> String {
+    match env::var("LOGGINB_BUCKET_NAME") {
+        Ok(bucket) => bucket,
+        Err(_) => String::from("request_logs"),
+    }
+}
+
 pub fn log_format() -> LogFormat {
     match env::var("LOG_FORMAT") {
         Ok(format) => match &(format.to_lowercase())[..] {
