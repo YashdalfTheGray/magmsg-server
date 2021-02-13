@@ -9,9 +9,7 @@ extern crate dotenv;
 
 use std::thread;
 
-use appenv::{
-    assume_role_arn, assume_role_user_creds, external_id, logging_assume_role_arn, port, region,
-};
+use appenv::{assume_role_arn, assume_role_user_creds, external_id, port, region};
 use dotenv::dotenv;
 use rocket::config::{Config, Environment};
 use rocket_contrib::helmet::SpaceHelmet;
@@ -47,18 +45,8 @@ fn main() {
         region(),
     );
 
-    let logs_creds_provider = sdk::CustomStsProvider::new(
-        assume_role_user_creds(),
-        logging_assume_role_arn(),
-        Some(external_id()),
-        region(),
-    );
-
     let auto_app_creds_provider = AutoRefreshingProvider::new(app_creds_provider)
         .expect("Something went wrong while creating the app creds provider");
-
-    let auto_logs_creds_provider = AutoRefreshingProvider::new(logs_creds_provider)
-        .expect("Something went wrong while creating the logging creds provider");
 
     let rocket_thread_handle = thread::spawn(|| {
         rocket::custom(config)
