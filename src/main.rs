@@ -7,6 +7,8 @@ extern crate rocket_contrib;
 
 extern crate dotenv;
 
+use std::thread;
+
 use appenv::{
     assume_role_arn, assume_role_user_creds, external_id, logging_assume_role_arn, port, region,
 };
@@ -58,29 +60,33 @@ fn main() {
     let auto_logs_creds_provider = AutoRefreshingProvider::new(logs_creds_provider)
         .expect("Something went wrong while creating the logging creds provider");
 
-    rocket::custom(config)
-        .attach(SpaceHelmet::default())
-        .attach(request_id::RequestId::default())
-        .attach(request_logger::RequestLogger::default())
-        .manage(auto_app_creds_provider)
-        .mount(
-            "/",
-            routes![
-                routes::index,
-                routes::api_index,
-                routes::get_all_messages,
-                routes::get_all_messages_no_auth,
-                routes::add_new_message,
-                routes::add_new_message_no_auth,
-                routes::get_one_message,
-                routes::get_one_message_no_auth,
-            ],
-        )
-        .register(catchers![
-            catchers::bad_request,
-            catchers::unauthorized,
-            catchers::not_found,
-            catchers::internal_error,
-        ])
-        .launch();
+    let rocket_thread_handle = thread::spawn(|| {
+        rocket::custom(config)
+            .attach(SpaceHelmet::default())
+            .attach(request_id::RequestId::default())
+            .attach(request_logger::RequestLogger::default())
+            .manage(auto_app_creds_provider)
+            .mount(
+                "/",
+                routes![
+                    routes::index,
+                    routes::api_index,
+                    routes::get_all_messages,
+                    routes::get_all_messages_no_auth,
+                    routes::add_new_message,
+                    routes::add_new_message_no_auth,
+                    routes::get_one_message,
+                    routes::get_one_message_no_auth,
+                ],
+            )
+            .register(catchers![
+                catchers::bad_request,
+                catchers::unauthorized,
+                catchers::not_found,
+                catchers::internal_error,
+            ])
+            .launch();
+    });
+
+    rocket_thread_handle.join().unwrap();
 }
