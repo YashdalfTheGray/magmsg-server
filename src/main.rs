@@ -7,7 +7,7 @@ extern crate rocket_contrib;
 
 extern crate dotenv;
 
-use std::sync::mpsc;
+use std::sync::{mpsc, Mutex};
 use std::thread;
 
 use appenv::{assume_role_arn, assume_role_user_creds, external_id, port, region};
@@ -60,11 +60,13 @@ fn main() {
         }
     });
 
+    let mutex_tx = Mutex::new(tx);
+
     let rocket_thread_handle = thread::spawn(move || {
         rocket::custom(config)
             .attach(SpaceHelmet::default())
             .attach(request_id::RequestId::default())
-            .attach(request_logger::RequestLogger::default())
+            .attach(request_logger::RequestLogger::new(mutex_tx, None))
             .manage(auto_app_creds_provider)
             .mount(
                 "/",
