@@ -48,6 +48,10 @@ fn main() {
     let auto_app_creds_provider = AutoRefreshingProvider::new(app_creds_provider)
         .expect("Something went wrong while creating the app creds provider");
 
+    let logging_thread_handle = thread::spawn(|| {
+        let logger = s3_logger::S3Logger::new();
+    });
+
     let rocket_thread_handle = thread::spawn(|| {
         rocket::custom(config)
             .attach(SpaceHelmet::default())
@@ -77,4 +81,5 @@ fn main() {
     });
 
     rocket_thread_handle.join().unwrap();
+    logging_thread_handle.join().unwrap();
 }
