@@ -62,5 +62,12 @@ impl Fairing for RequestLogger {
         log_line.set_status(response.status());
 
         response.set_sized_body(Cursor::new(body_str));
+
+        match self.mutex_tx.lock() {
+            Ok(tx) => {
+                tx.send(log_line).unwrap();
+            }
+            Err(_) => (),
+        }
     }
 }
