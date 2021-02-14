@@ -7,10 +7,12 @@ extern crate rocket_contrib;
 
 extern crate dotenv;
 
+use std::sync::mpsc;
 use std::thread;
 
 use appenv::{assume_role_arn, assume_role_user_creds, external_id, port, region};
 use dotenv::dotenv;
+use log_line::LogLine;
 use rocket::config::{Config, Environment};
 use rocket_contrib::helmet::SpaceHelmet;
 use rusoto_credential::AutoRefreshingProvider;
@@ -48,11 +50,17 @@ fn main() {
     let auto_app_creds_provider = AutoRefreshingProvider::new(app_creds_provider)
         .expect("Something went wrong while creating the app creds provider");
 
-    let logging_thread_handle = thread::spawn(|| {
-        let logger = s3_logger::S3Logger::new();
+    let (tx, rx) = mpsc::channel::<LogLine>();
+
+    let logging_thread_handle = thread::spawn(move || {
+        let mut logger = s3_logger::S3Logger::new();
+
+        for line in rx {
+            logger.log_request(line);
+        }
     });
 
-    let rocket_thread_handle = thread::spawn(|| {
+    let rocket_thread_handle = thread::spawn(move || {
         rocket::custom(config)
             .attach(SpaceHelmet::default())
             .attach(request_id::RequestId::default())
