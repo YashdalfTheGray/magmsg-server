@@ -1,4 +1,7 @@
-use std::io::Cursor;
+use std::{
+    io::Cursor,
+    sync::{mpsc::Sender, Mutex},
+};
 
 use rocket::{
     fairing::{Fairing, Info, Kind},
@@ -13,17 +16,21 @@ use crate::{
 #[derive(Debug)]
 pub struct RequestLogger {
     format: LogFormat,
+    mutex_tx: Mutex<Sender<LogLine>>,
 }
 
 impl RequestLogger {
-    pub fn new(format: LogFormat) -> RequestLogger {
-        RequestLogger { format }
-    }
-}
-
-impl Default for RequestLogger {
-    fn default() -> Self {
-        RequestLogger::new(appenv::log_format())
+    pub fn new(
+        mutex_tx: Mutex<Sender<LogLine>>,
+        optional_format: Option<LogFormat>,
+    ) -> RequestLogger {
+        RequestLogger {
+            mutex_tx,
+            format: match optional_format {
+                Some(format) => format,
+                None => appenv::log_format(),
+            },
+        }
     }
 }
 
