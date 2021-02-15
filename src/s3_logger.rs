@@ -1,3 +1,5 @@
+use std::{fs::OpenOptions, io::Write};
+
 use rusoto_credential::AutoRefreshingProvider;
 
 use crate::{
@@ -27,7 +29,14 @@ impl S3Logger {
     }
 
     pub fn log_request(&mut self, line: LogLine) {
-        self.log_lines_cache.push(line);
+        self.log_lines_cache.push(line.clone());
+        let mut file = OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open("logs/requests.log")
+            .unwrap();
+
+        file.write((line.to_string() + "\n").as_bytes()).unwrap();
     }
 
     pub fn publish_to_s3(&mut self) {
