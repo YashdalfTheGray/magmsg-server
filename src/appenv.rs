@@ -1,5 +1,6 @@
 use std::env;
 
+use chrono::Duration;
 use rusoto_core::Region;
 use rusoto_credential::StaticProvider;
 
@@ -59,7 +60,7 @@ pub fn auth_header_key() -> String {
 }
 
 pub fn logging_bucket_name() -> String {
-    match env::var("LOGGINB_BUCKET_NAME") {
+    match env::var("LOGGING_BUCKET_NAME") {
         Ok(bucket) => bucket,
         Err(_) => String::from("request_logs"),
     }
@@ -75,5 +76,20 @@ pub fn log_format() -> LogFormat {
             "" | &_ => LogFormat::Standard,
         },
         Err(_) => LogFormat::Standard,
+    }
+}
+
+pub fn log_write_interval() -> Duration {
+    match env::var("LOG_WRITE_INTERVAL") {
+        Ok(interval_str) => {
+            let mut interval = interval_str.parse::<i64>().unwrap_or(60 * 15);
+
+            if interval < 60 {
+                interval = 60;
+            }
+
+            Duration::seconds(interval)
+        }
+        Err(_) => Duration::seconds(15 * 60),
     }
 }
