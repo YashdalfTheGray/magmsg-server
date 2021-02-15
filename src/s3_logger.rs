@@ -1,5 +1,6 @@
 use std::{fs::OpenOptions, io::Write};
 
+use chrono::{DateTime, Utc};
 use rusoto_credential::AutoRefreshingProvider;
 
 use crate::{
@@ -11,6 +12,7 @@ use crate::appenv::*;
 
 pub struct S3Logger {
     log_lines_cache: Vec<LogLine>,
+    last_successful_write: DateTime<Utc>,
     creds_provider: AutoRefreshingProvider<CustomStsProvider>,
 }
 
@@ -18,6 +20,7 @@ impl S3Logger {
     pub fn new() -> S3Logger {
         S3Logger {
             log_lines_cache: vec![],
+            last_successful_write: Utc::now(),
             creds_provider: AutoRefreshingProvider::new(sdk::CustomStsProvider::new(
                 assume_role_user_creds(),
                 logging_assume_role_arn(),
