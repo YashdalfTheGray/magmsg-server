@@ -35,6 +35,8 @@ mod utils;
 fn main() {
     dotenv().ok();
 
+    utils::configure_application_logging(appenv::application_log_path()).unwrap();
+
     let config = Config::build(Environment::Development)
         .port(port())
         .finalize()
