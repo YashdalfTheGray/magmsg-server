@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 rocket = "0.4.6"
 serde = "1.0.119"
-serde_json = { version = "1.0.61", features = ["arbitrary_precision"]}
+serde_json = { version = "1.0.61", features = ["arbitrary_precision"] }
 serde_derive = "1.0.118"
 dotenv = "0.15.0"
 dotenv_codegen = "0.15.0"
@@ -24,8 +24,9 @@ hyper-tls = "0.5.0"
 chrono = "0.4.19"
 async-trait = "0.1.42"
 futures = "0.3.12"
-tokio = {version = "1.0.2", features = ["full"] }
+tokio = { version = "1.0.2", features = ["full"] }
 rusoto_s3 = "0.46.0"
+log = { version = "0.4" }
 
 [dependencies.rocket_contrib]
 version = "0.4.6"
