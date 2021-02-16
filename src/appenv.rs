@@ -93,3 +93,10 @@ pub fn log_write_interval() -> Duration {
         Err(_) => Duration::seconds(15 * 60),
     }
 }
+
+pub fn application_log_path() -> String {
+    match env::var("APPLICATION_LOG_PATH") {
+        Ok(path) => path,
+        Err(_) => String::from("logs/application.log"),
+    }
+}

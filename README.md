@@ -18,6 +18,7 @@ LOG_FORMAT=<the format of the request log lines, optional, defaults to "dev">
 LOGGING_ASSUME_ROLE_ARN=<a role to assume to get permissions to log>
 LOGGING_BUCKET_NAME=<an S3 bucket to send the logs to, optional>
 LOG_WRITE_INTERVAL=<how often to push logs to S3, in seconds, optional, defaults to 15 minutes>
+APPLICATION_LOG_PATH=<where to put the application logs, optional, defaults to "logs/application.log">
 AWS_REGION=<aws region>
 ```
 
