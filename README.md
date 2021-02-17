@@ -46,6 +46,18 @@ Creates a new message on the server. This endpoint expects a body in JSON format
 }
 ```
 
+## Request logging
+
+This server uses a Rocket.rs Fairing to enable logging information about requests that are coming into the server. There are a couple of knobs and switches that you can change about this behavior using a `.env` file or environment variables but given a certain period (defaults to 15 minutes) and a certain Amazon S3 bucket name (defaults to `request-logs`), this will push the last 15 minutes of request logs up to S3. You will also need to provide a role that we can assume that will give us access to the S3 bucket.
+
+### Supported formats
+
+| Format name | Format string                                                                            |
+| ----------- | ---------------------------------------------------------------------------------------- |
+| `dev`       | `{method} {uri} {status} {response_length} - {response_time}ms`                          |
+| `standard`  | `{client_addr} [{date}] "{method} {uri}" {status} {response_length} - {response_time}ms` |
+| `short`     | `{client_addr} {method} {uri} {status} {response_length} - {response_time}ms`            |
+
 ## Environment variable configuration
 
 This application requires certain environment variables to be present before it will start.
@@ -65,14 +77,6 @@ LOG_WRITE_INTERVAL=<how often to push logs to S3, in seconds, optional, defaults
 APPLICATION_LOG_PATH=<where to put the application logs, optional, defaults to "logs/application.log">
 AWS_REGION=<aws region>
 ```
-
-## Request log Formats
-
-| Format name | Format string                                                                            |
-| ----------- | ---------------------------------------------------------------------------------------- |
-| `dev`       | `{method} {uri} {status} {response_length} - {response_time}ms`                          |
-| `standard`  | `{client_addr} [{date}] "{method} {uri}" {status} {response_length} - {response_time}ms` |
-| `short`     | `{client_addr} {method} {uri} {status} {response_length} - {response_time}ms`            |
 
 ## Resources
 
