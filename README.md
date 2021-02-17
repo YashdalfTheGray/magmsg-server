@@ -13,9 +13,13 @@ The API for this is fairly simple. The main primitive is a message. Operations e
 | `content`   | String        | the actual message                                            |
 | `createdBy` | String        | the person who created it                                     |
 
+### `GET /api`
+
+Just a status check, mostly meant for canaries or pings to the system to make sure that everything is working just fine. Returns JSON and does not require the `Authorization` header.
+
 ### `GET /api/messages?fields`
 
-Gets a list of all the messages, optionally with only the specified fields. The fields can be passed in as CSV and valid fields are listed above. Returns JSON.
+Gets a list of all the messages, optionally with only the specified fields. The fields can be passed in as CSV and valid fields are listed above. Returns JSON and requires the `Authorization` header.
 
 Examples
 
