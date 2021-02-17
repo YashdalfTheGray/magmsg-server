@@ -13,6 +13,15 @@ The API for this is fairly simple. The main primitive is a message. Operations e
 | `content`   | String        | the actual message                                            |
 | `createdBy` | String        | the person who created it                                     |
 
+### `GET /api/messages?fields`
+
+Gets a list of all the messages, optionally with only the specified fields. The fields can be passed in as CSV and valid fields are listed above. Returns JSON.
+
+Examples
+
+- `GET /api/messages` - get all messages with all the fields in them as a JSON array
+- `GET /api/messages?fields=content,messageId` - get all messages just with the `content` and `messageId` fields as a JSON array.
+
 ## Environment variable configuration
 
 This application requires certain environment variables to be present before it will start.
