@@ -2,6 +2,17 @@
 
 A server that stores and backs up the messages sent to the edge
 
+## API
+
+The API for this is fairly simple. The main primitive is a message. Operations except for the UD in CRUDL are supported currently - create, read, list. The fields in a message are,
+
+| Name        | Type          | Description                                                   |
+| ----------- | ------------- | ------------------------------------------------------------- |
+| `messageId` | String (UUID) | an ID that identified that specific message                   |
+| `createdAt` | Number        | the time when the message was created, in ms since Unix Epoch |
+| `content`   | String        | the actual message                                            |
+| `createdBy` | String        | the person who created it                                     |
+
 ## Environment variable configuration
 
 This application requires certain environment variables to be present before it will start.
