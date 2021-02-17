@@ -15,16 +15,36 @@ The API for this is fairly simple. The main primitive is a message. Operations e
 
 ### `GET /api`
 
-Just a status check, mostly meant for canaries or pings to the system to make sure that everything is working just fine. Returns JSON and does not require the `Authorization` header.
+Just a status check, mostly meant for canaries or pings to the system to make sure that everything is working just fine. Returns JSON and does not require authentication using HTTP headers.
 
 ### `GET /api/messages?fields`
 
-Gets a list of all the messages, optionally with only the specified fields. The fields can be passed in as CSV and valid fields are listed above. Returns JSON and requires the `Authorization` header.
+Gets a list of all the messages, optionally with only the specified fields. The fields can be passed in as CSV and valid fields are listed above. Returns JSON and requires authentication using HTTP headers.
 
 Examples
 
 - `GET /api/messages` - get all messages with all the fields in them as a JSON array
 - `GET /api/messages?fields=content,messageId` - get all messages just with the `content` and `messageId` fields as a JSON array.
+
+### `GET /api/messages/<messageId>?fields`
+
+Gets one specific message specified by the passed in message ID. Returns a 404 if message is not found, otherwise returns the message encoded as JSON. This endpoint also has similar filtering capabilities as the endpoint above. Requires authentication using HTTP headers.
+
+Examples
+
+- `GET /api/messages/<uuid>` - get a particular message
+- `GET /api/messages/<uuid>?fields=content` - get only the `content` field of a particular message
+
+### `PUT /api/messages`
+
+Creates a new message on the server. This endpoint expects a body in JSON format and requires authentication using HTTP headers. On success, it returns an HTTP 201. The body expected is detailed below.
+
+```json
+{
+  "message": "<the content of the message>",
+  "author": "<who wrote this message>"
+}
+```
 
 ## Environment variable configuration
 
