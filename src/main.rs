@@ -11,7 +11,8 @@ use std::sync::{mpsc, Mutex};
 use std::thread;
 
 use appenv::{
-    application_log_path, assume_role_arn, assume_role_user_creds, external_id, port, region,
+    application_log_path, assume_role_arn, assume_role_user_creds, external_id, log_write_interval,
+    port, region,
 };
 use dotenv::dotenv;
 use log_line::LogLine;
@@ -59,6 +60,7 @@ fn main() {
 
     let s3_writer_thread = thread::spawn(move || {
         let logger = s3_logger::S3Logger::new(application_log_path());
+        thread::sleep(log_write_interval().to_std().unwrap());
     });
 
     let file_logger_thread = thread::spawn(move || {
