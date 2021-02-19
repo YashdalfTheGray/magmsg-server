@@ -50,6 +50,8 @@ Creates a new message on the server. This endpoint expects a body in JSON format
 
 This server uses a Rocket.rs Fairing to enable logging information about requests that are coming into the server. There are a couple of knobs and switches that you can change about this behavior using a `.env` file or environment variables but given a certain period (defaults to 15 minutes) and a certain Amazon S3 bucket name (defaults to `request-logs`), this will push the last 15 minutes of request logs up to S3. You will also need to provide a role that we can assume that will give us access to the S3 bucket.
 
+Additionally, the logs folder contains a request log file that contains logs that haven't been written to S3 yet.
+
 ### Supported formats
 
 | Format name | Format string                                                                            |
@@ -81,7 +83,7 @@ AWS_REGION=<aws region>
 ## Resources
 
 - [Rust by example](https://doc.rust-lang.org/stable/rust-by-example/index.html)
-- [Rocket guide] (https://rocket.rs/v0.4/guide/introduction/)
+- [Rocket guide](https://rocket.rs/v0.4/guide/introduction/)
 - [Rusoto - AWS SDK for Rust](https://github.com/rusoto/rusoto)
 - [Rusoto docs](https://www.rusoto.org/index.html)
 - [Dynomite](https://github.com/softprops/dynomite)
