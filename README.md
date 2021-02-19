@@ -50,7 +50,7 @@ Creates a new message on the server. This endpoint expects a body in JSON format
 
 This server uses a Rocket.rs Fairing to enable logging information about requests that are coming into the server. The request logs are written to file every time a request comes along.
 
-There are a couple of knobs and switches that you can change about this behavior using a `.env` file or environment variables but given a certain period (defaults to 15 minutes) and a certain Amazon S3 bucket name (defaults to `request-logs`), this will push the last 15 minutes of request logs up to S3. You will also need to provide a role that we can assume that will give us access to the S3 bucket.
+There are a couple of knobs and switches that you can change about this behavior using a `.env` file or environment variables but given a certain period (defaults to 60 minutes) and a certain Amazon S3 bucket name (defaults to `request-logs`), this will push the last 60 minutes of request logs up to S3. You will also need to provide a role that we can assume that will give us access to the S3 bucket.
 
 Additionally, the logs folder contains a request log file that contains logs that haven't been written to S3 yet.
 

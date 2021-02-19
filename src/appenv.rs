@@ -82,7 +82,7 @@ pub fn log_format() -> LogFormat {
 pub fn log_write_interval() -> Duration {
     match env::var("LOG_WRITE_INTERVAL") {
         Ok(interval_str) => {
-            let mut interval = interval_str.parse::<i64>().unwrap_or(60 * 15);
+            let mut interval = interval_str.parse::<i64>().unwrap_or(60 * 60);
 
             if interval < 60 {
                 interval = 60;
@@ -90,7 +90,7 @@ pub fn log_write_interval() -> Duration {
 
             Duration::seconds(interval)
         }
-        Err(_) => Duration::seconds(15 * 60),
+        Err(_) => Duration::seconds(60 * 60),
     }
 }
 
