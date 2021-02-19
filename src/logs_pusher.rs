@@ -5,16 +5,18 @@ use crate::sdk::{self, CustomStsProvider};
 
 use crate::appenv::*;
 
-pub struct S3Logger {
+pub struct S3LogsPusher {
     target_file: String,
+    bucket_name: String,
     last_successful_write: DateTime<Utc>,
     creds_provider: AutoRefreshingProvider<CustomStsProvider>,
 }
 
-impl S3Logger {
-    pub fn new(target_file: String) -> S3Logger {
-        S3Logger {
+impl S3LogsPusher {
+    pub fn new(target_file: String, bucket_name: String) -> S3LogsPusher {
+        S3LogsPusher {
             target_file,
+            bucket_name,
             last_successful_write: Utc::now(),
             creds_provider: AutoRefreshingProvider::new(sdk::CustomStsProvider::new(
                 assume_role_user_creds(),

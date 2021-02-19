@@ -10,10 +10,7 @@ extern crate dotenv;
 use std::sync::{mpsc, Mutex};
 use std::thread;
 
-use appenv::{
-    application_log_path, assume_role_arn, assume_role_user_creds, external_id, log_write_interval,
-    port, region,
-};
+use appenv::*;
 use dotenv::dotenv;
 use log_line::LogLine;
 use rocket::config::{Config, Environment};
@@ -26,13 +23,13 @@ mod catchers;
 mod constants;
 mod dal;
 mod log_line;
+mod logs_pusher;
 mod logs_writer;
 mod message;
 mod message_request;
 mod request_id;
 mod request_logger;
 mod routes;
-mod s3_logger;
 mod sdk;
 mod utils;
 
@@ -58,8 +55,10 @@ fn main() {
 
     let (tx, rx) = mpsc::channel::<LogLine>();
 
-    let s3_writer_thread = thread::spawn(move || {
-        let logger = s3_logger::S3Logger::new(application_log_path());
+    let s3_logs_pusher_thread = thread::spawn(move || {
+        let mut logs_pusher =
+            logs_pusher::S3LogsPusher::new(application_log_path(), logging_bucket_name());
+        logs_pusher.publish_to_s3();
         thread::sleep(log_write_interval().to_std().unwrap());
     });
 
@@ -103,5 +102,5 @@ fn main() {
 
     rocket_thread_handle.join().unwrap();
     file_logger_thread.join().unwrap();
-    s3_writer_thread.join().unwrap();
+    s3_logs_pusher_thread.join().unwrap();
 }
