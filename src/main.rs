@@ -23,6 +23,7 @@ mod catchers;
 mod constants;
 mod dal;
 mod log_line;
+mod logs_writer;
 mod message;
 mod message_request;
 mod request_id;
