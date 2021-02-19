@@ -58,7 +58,7 @@ fn main() {
     let (tx, rx) = mpsc::channel::<LogLine>();
 
     let s3_writer_thread = thread::spawn(move || {
-        let logger = s3_logger::S3Logger::new();
+        let logger = s3_logger::S3Logger::new(application_log_path());
     });
 
     let file_logger_thread = thread::spawn(move || {
