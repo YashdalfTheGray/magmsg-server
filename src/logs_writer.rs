@@ -1,4 +1,9 @@
-use std::fs::{File, OpenOptions};
+use std::{
+    fs::{File, OpenOptions},
+    io::Write,
+};
+
+use crate::log_line::LogLine;
 
 pub struct LogsWriter {
     file: File,
@@ -13,5 +18,9 @@ impl LogsWriter {
                 .open(file_path)
                 .unwrap(),
         }
+    }
+
+    pub fn log_request(&mut self, line: LogLine) {
+        self.file.write(line.to_string().as_bytes()).unwrap();
     }
 }
