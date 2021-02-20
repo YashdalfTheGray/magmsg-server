@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, str::FromStr};
 
 use chrono::Duration;
 use rusoto_core::Region;
@@ -105,5 +105,15 @@ pub fn request_log_path() -> String {
     match env::var("REQUEST_LOG_PATH") {
         Ok(path) => path,
         Err(_) => String::from("logs/request.log"),
+    }
+}
+
+pub fn log_level() -> log::LevelFilter {
+    match env::var("LOG_LEVEL") {
+        Ok(level_str) => match log::LevelFilter::from_str(&level_str) {
+            Ok(level) => level,
+            Err(_) => log::LevelFilter::Info,
+        },
+        Err(_) => log::LevelFilter::Info,
     }
 }
