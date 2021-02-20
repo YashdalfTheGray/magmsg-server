@@ -100,3 +100,10 @@ pub fn application_log_path() -> String {
         Err(_) => String::from("logs/application.log"),
     }
 }
+
+pub fn request_log_path() -> String {
+    match env::var("REQUEST_LOG_PATH") {
+        Ok(path) => path,
+        Err(_) => String::from("logs/request.log"),
+    }
+}
