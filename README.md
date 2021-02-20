@@ -79,6 +79,7 @@ LOGGING_ASSUME_ROLE_ARN=<a role to assume to get permissions to log>
 LOGGING_BUCKET_NAME=<an S3 bucket to send the logs to, optional>
 LOG_WRITE_INTERVAL=<how often to push logs to S3, in seconds, optional, defaults to 15 minutes>
 APPLICATION_LOG_PATH=<where to put the application logs, optional, defaults to "logs/application.log">
+REQUEST_LOG_PATH=<where to put the request logs, optional, defaults to "logs/request.log">
 AWS_REGION=<aws region>
 ```
 
