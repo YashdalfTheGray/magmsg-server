@@ -55,12 +55,12 @@ fn main() {
 
     let (tx, rx) = mpsc::channel::<LogLine>();
 
-    // let s3_logs_pusher_thread = thread::spawn(move || {
-    //     let mut logs_pusher =
-    //         logs_pusher::S3LogsPusher::new(application_log_path(), logging_bucket_name());
-    //     logs_pusher.publish_to_s3();
-    //     thread::sleep(log_write_interval().to_std().unwrap());
-    // });
+    let s3_logs_pusher_thread = thread::spawn(move || {
+        let mut logs_pusher =
+            logs_pusher::S3LogsPusher::new(application_log_path(), logging_bucket_name());
+        logs_pusher.publish_to_s3();
+        thread::sleep(log_write_interval().to_std().unwrap());
+    });
 
     let file_logger_thread = thread::spawn(move || {
         let mut logger = logs_writer::LogsWriter::new(request_log_path());
@@ -102,5 +102,5 @@ fn main() {
 
     rocket_thread_handle.join().unwrap();
     file_logger_thread.join().unwrap();
-    // s3_logs_pusher_thread.join().unwrap();
+    s3_logs_pusher_thread.join().unwrap();
 }
