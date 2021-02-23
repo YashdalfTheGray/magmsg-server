@@ -93,7 +93,6 @@ pub fn configure_application_logging(path: String) -> Result<(), fern::InitError
         )
         .chain(
             fern::Dispatch::new()
-                .format(|out, message, record| out.finish(format_args!("{}", message)))
                 .level(log_level())
                 .chain(std::io::stdout()),
         )
