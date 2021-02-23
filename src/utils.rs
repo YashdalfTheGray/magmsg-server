@@ -86,7 +86,7 @@ pub fn configure_application_logging(path: String) -> Result<(), fern::InitError
                 message
             ))
         })
-        .level(log::LevelFilter::Debug)
+        .level(log_level())
         .chain(std::io::stdout())
         .chain(fern::log_file(path)?)
         .apply()?;
