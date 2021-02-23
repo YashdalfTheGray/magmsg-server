@@ -90,5 +90,22 @@ pub fn configure_application_logging(path: String) -> Result<(), fern::InitError
         .chain(std::io::stdout())
         .chain(fern::log_file(path)?)
         .apply()?;
+
+    fern::Dispatch::new()
+        .chain(
+            fern::Dispatch::new()
+                .format(|out, message, record| {
+                    out.finish(format_args!(
+                        "{}[{}][{}] {}",
+                        chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
+                        record.target(),
+                        record.level(),
+                        message
+                    ))
+                })
+                .level(log_level())
+                .chain(fern::log_file(path)?),
+        )
+        .apply()?;
     Ok(())
 }
