@@ -12,6 +12,7 @@ use std::thread;
 
 use appenv::*;
 use dotenv::dotenv;
+use log::debug;
 use log_line::LogLine;
 use rocket::config::{Config, Environment};
 use rocket_contrib::helmet::SpaceHelmet;
@@ -56,6 +57,10 @@ fn main() {
     let (tx, rx) = mpsc::channel::<LogLine>();
 
     let s3_logs_pusher_thread = thread::spawn(move || {
+        debug!(
+            "Started S3 logs pusher thread, sleeping for {} seconds before writing.",
+            log_write_interval().num_seconds()
+        );
         thread::sleep(log_write_interval().to_std().unwrap());
         let mut logs_pusher =
             logs_pusher::S3LogsPusher::new(application_log_path(), logging_bucket_name());
@@ -63,6 +68,7 @@ fn main() {
     });
 
     let file_logger_thread = thread::spawn(move || {
+        debug!("Started file logger thread, waiting for request log statements.");
         let mut logger = logs_writer::LogsWriter::new(request_log_path());
 
         for line in rx {
@@ -73,6 +79,7 @@ fn main() {
     let mutex_tx = Mutex::new(tx);
 
     let rocket_thread_handle = thread::spawn(move || {
+        debug!("Launching rocket instance.");
         rocket::custom(config)
             .attach(SpaceHelmet::default())
             .attach(request_id::RequestId::default())
