@@ -1,4 +1,7 @@
+use std::fs;
+
 use chrono::{DateTime, Utc};
+use log::info;
 use rusoto_credential::AutoRefreshingProvider;
 
 use crate::sdk::{self, CustomStsProvider};
@@ -30,5 +33,19 @@ impl S3LogsPusher {
 
     pub fn publish_to_s3(&mut self) {
         let s3client = sdk::get_s3_client(self.creds_provider.clone(), region());
+        let contents = match fs::read_to_string(self.target_file.clone()) {
+            Ok(file_str) => {
+                info!(
+                    "Reading application log to upload to S3, length: {}",
+                    file_str.len()
+                );
+                file_str
+            }
+            Err(e) => {
+                info!("Reading application log failed!");
+                info!("{}", e);
+                String::from("")
+            }
+        };
     }
 }
