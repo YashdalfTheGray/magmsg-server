@@ -67,7 +67,7 @@ fn main() {
         logs_pusher.publish_to_s3();
     });
 
-    let file_logger_thread = thread::spawn(move || {
+    let request_logger_thread = thread::spawn(move || {
         debug!("Started file logger thread, waiting for request log statements.");
         let mut logger = logs_writer::LogsWriter::new(request_log_path());
 
@@ -108,6 +108,6 @@ fn main() {
     });
 
     rocket_thread_handle.join().unwrap();
-    file_logger_thread.join().unwrap();
+    request_logger_thread.join().unwrap();
     s3_logs_pusher_thread.join().unwrap();
 }
