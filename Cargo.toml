@@ -27,7 +27,7 @@ futures = "0.3.12"
 tokio = { version = "1.0.2", features = ["full"] }
 rusoto_s3 = "0.46.0"
 log = { version = "0.4" }
-fern = "0.6.0"
+fern = { version = "0.6.0", features = ["date-based"] }
 strip-ansi-escapes = "0.1.0"
 
 [dependencies.rocket_contrib]
