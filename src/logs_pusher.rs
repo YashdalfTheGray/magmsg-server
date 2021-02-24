@@ -1,7 +1,7 @@
 use std::fs;
 
 use chrono::{DateTime, Utc};
-use log::info;
+use log::{info, warn};
 use rusoto_credential::AutoRefreshingProvider;
 
 use crate::sdk::{self, CustomStsProvider};
@@ -42,8 +42,8 @@ impl S3LogsPusher {
                 file_str
             }
             Err(e) => {
-                info!("Reading application log failed!");
-                info!("{}", e);
+                warn!("Reading application log failed!");
+                warn!("{}", e);
                 String::from("")
             }
         };
