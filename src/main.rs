@@ -1,4 +1,4 @@
-#![feature(proc_macro_hygiene, decl_macro, fmt_as_str)]
+#![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use]
 extern crate rocket;
@@ -56,10 +56,10 @@ fn main() {
     let (tx, rx) = mpsc::channel::<LogLine>();
 
     let s3_logs_pusher_thread = thread::spawn(move || {
+        thread::sleep(log_write_interval().to_std().unwrap());
         let mut logs_pusher =
             logs_pusher::S3LogsPusher::new(application_log_path(), logging_bucket_name());
         logs_pusher.publish_to_s3();
-        thread::sleep(log_write_interval().to_std().unwrap());
     });
 
     let file_logger_thread = thread::spawn(move || {
