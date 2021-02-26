@@ -83,6 +83,10 @@ REQUEST_LOG_PATH=<where to put the request logs, optional, defaults to "logs/req
 AWS_REGION=<aws region>
 ```
 
+## Running with Docker
+
+This server comes equiped with Docker support. Once you have pulled down the repository, run `docker build -t magmsg-server .` to get started.
+
 ## Resources
 
 - [Rust by example](https://doc.rust-lang.org/stable/rust-by-example/index.html)
