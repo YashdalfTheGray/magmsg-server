@@ -1,6 +1,7 @@
-use std::fs;
+use std::{fmt::format, fs};
 
 use chrono::{DateTime, Utc};
+use fs::rename;
 use log::{info, warn};
 use rusoto_credential::AutoRefreshingProvider;
 
@@ -29,8 +30,10 @@ impl S3LogsPusher {
         }
     }
 
-    pub fn publish_to_s3(&mut self, target_file: String) {
+    pub fn publish_to_s3(&mut self, target_file: &String) {
+        let new_file_name = format!("{}.{}", target_file.to_string(), "old");
         let s3client = sdk::get_s3_client(self.creds_provider.clone(), region());
+        fs::rename(target_file, new_file_name).unwrap();
         let contents = match fs::read_to_string(target_file.clone()) {
             Ok(file_str) => {
                 info!(
