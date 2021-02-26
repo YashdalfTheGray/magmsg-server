@@ -85,7 +85,7 @@ AWS_REGION=<aws region>
 
 ## Running with Docker
 
-This server comes equiped with Docker support. Once you have pulled down the repository, run `docker build -t magmsg-server .` to get started.
+This server comes equiped with Docker support. Once you have pulled down the repository, run `docker build -t magmsg-server .` to get started. Once the image is built, you can run the container by running `docker run -d --rm --name <some_name> -p 8080:8080 -v logs/:/app/logs --env-file .env magmsg-server`.
 
 ## Resources
 
