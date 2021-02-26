@@ -87,6 +87,8 @@ AWS_REGION=<aws region>
 
 This server comes equiped with Docker support. Once you have pulled down the repository, run `docker build -t magmsg-server .` to get started. Once the image is built, you can run the container by running `docker run -d --rm --name <some_name> -p 8080:8080 -v logs/:/app/logs --env-file .env magmsg-server`.
 
+Some explanation, the `-p` switch maps a container port to a host port, the `-v` flag mounts the logs folder into the container and you'll still need the `.env` file set up properly for it.
+
 ## Resources
 
 - [Rust by example](https://doc.rust-lang.org/stable/rust-by-example/index.html)
