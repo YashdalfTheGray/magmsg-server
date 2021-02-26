@@ -9,16 +9,14 @@ use crate::sdk::{self, CustomStsProvider};
 use crate::appenv::*;
 
 pub struct S3LogsPusher {
-    target_file: String,
     bucket_name: String,
     last_successful_write: DateTime<Utc>,
     creds_provider: AutoRefreshingProvider<CustomStsProvider>,
 }
 
 impl S3LogsPusher {
-    pub fn new(target_file: String, bucket_name: String) -> S3LogsPusher {
+    pub fn new(bucket_name: String) -> S3LogsPusher {
         S3LogsPusher {
-            target_file,
             bucket_name,
             last_successful_write: Utc::now(),
             creds_provider: AutoRefreshingProvider::new(sdk::CustomStsProvider::new(
@@ -31,9 +29,9 @@ impl S3LogsPusher {
         }
     }
 
-    pub fn publish_to_s3(&mut self) {
+    pub fn publish_to_s3(&mut self, target_file: String) {
         let s3client = sdk::get_s3_client(self.creds_provider.clone(), region());
-        let contents = match fs::read_to_string(self.target_file.clone()) {
+        let contents = match fs::read_to_string(target_file.clone()) {
             Ok(file_str) => {
                 info!(
                     "Reading application log to upload to S3, length: {}",
@@ -47,5 +45,7 @@ impl S3LogsPusher {
                 String::from("")
             }
         };
+
+        self.last_successful_write = Utc::now();
     }
 }
