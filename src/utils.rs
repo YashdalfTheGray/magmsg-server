@@ -89,7 +89,7 @@ pub fn configure_application_logging(path: String) -> Result<(), fern::InitError
                     ))
                 })
                 .level(log_level())
-                .chain(fern::DateBased::new(path, ".%Y-%m-%d-%H")),
+                .chain(fern::log_file(path).unwrap()),
         )
         .chain(
             fern::Dispatch::new()
