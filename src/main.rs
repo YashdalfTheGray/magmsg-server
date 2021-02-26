@@ -62,9 +62,8 @@ fn main() {
             log_write_interval().num_seconds()
         );
         thread::sleep(log_write_interval().to_std().unwrap());
-        let mut logs_pusher =
-            logs_pusher::S3LogsPusher::new(application_log_path(), logging_bucket_name());
-        logs_pusher.publish_to_s3();
+        let mut logs_pusher = logs_pusher::S3LogsPusher::new(logging_bucket_name());
+        logs_pusher.publish_to_s3(application_log_path());
     });
 
     let request_logger_thread = thread::spawn(move || {
