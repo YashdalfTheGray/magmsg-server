@@ -7,7 +7,7 @@ use rusoto_dynamodb::{
     AttributeValue, DynamoDb, DynamoDbClient, GetItemInput, PutItemError, PutItemInput,
     PutItemOutput, ScanInput,
 };
-use rusoto_s3::{PutObjectRequest, S3Client, StreamingBody};
+use rusoto_s3::{PutObjectError, PutObjectOutput, PutObjectRequest, S3Client, StreamingBody, S3};
 
 pub async fn get_all_messages(
     client: DynamoDbClient,
@@ -80,10 +80,16 @@ pub async fn put_message(
     client.put_item(put_item_input).await
 }
 
-pub async fn put_object(client: S3Client, bucket_name: String, content: String) {
+pub async fn put_object(
+    client: S3Client,
+    bucket_name: String,
+    content: String,
+) -> Result<PutObjectOutput, RusotoError<PutObjectError>> {
     let put_object_request = PutObjectRequest {
         bucket: bucket_name,
         body: Some(StreamingBody::from(content.clone().as_bytes().to_vec())),
         ..Default::default()
     };
+
+    client.put_object(put_object_request).await
 }

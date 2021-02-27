@@ -32,6 +32,7 @@ impl S3LogsPusher {
     pub fn publish_to_s3(&mut self, target_file: &String) {
         let new_file_name = format!("{}.{}", target_file.to_string(), "old");
         let s3client = sdk::get_s3_client(self.creds_provider.clone(), region());
+        let runtime = tokio::runtime::Runtime::new().unwrap();
         let contents = match read_to_string(new_file_name.clone()) {
             Ok(file_str) => {
                 info!(
@@ -46,6 +47,10 @@ impl S3LogsPusher {
                 String::from("")
             }
         };
+
+        let put_object_future =
+            crate::dal::put_object(s3client, self.bucket_name.clone(), contents);
+        let put_object = runtime.block_on(put_object_future);
 
         self.last_successful_write = Utc::now();
     }
