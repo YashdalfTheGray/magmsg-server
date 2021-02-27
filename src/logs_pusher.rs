@@ -1,4 +1,4 @@
-use std::fs::{read_to_string, rename};
+use std::fs::read_to_string;
 
 use chrono::{DateTime, Utc};
 use log::{info, warn};
@@ -32,7 +32,6 @@ impl S3LogsPusher {
     pub fn publish_to_s3(&mut self, target_file: &String) {
         let new_file_name = format!("{}.{}", target_file.to_string(), "old");
         let s3client = sdk::get_s3_client(self.creds_provider.clone(), region());
-        rename(target_file, new_file_name.clone()).unwrap();
         let contents = match read_to_string(new_file_name.clone()) {
             Ok(file_str) => {
                 info!(
