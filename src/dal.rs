@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
+use crate::constants::*;
+use crate::message::Message;
 use rusoto_core::RusotoError;
 use rusoto_dynamodb::{
     AttributeValue, DynamoDb, DynamoDbClient, GetItemInput, PutItemError, PutItemInput,
     PutItemOutput, ScanInput,
 };
-
-use crate::constants::*;
-use crate::message::Message;
+use rusoto_s3::{PutObjectRequest, S3Client, StreamingBody};
 
 pub async fn get_all_messages(
     client: DynamoDbClient,
@@ -78,4 +78,12 @@ pub async fn put_message(
     };
 
     client.put_item(put_item_input).await
+}
+
+pub async fn put_object(client: S3Client, bucket_name: String, content: String) {
+    let put_object_request = PutObjectRequest {
+        bucket: bucket_name,
+        body: Some(StreamingBody::from(content.clone().as_bytes().to_vec())),
+        ..Default::default()
+    };
 }
