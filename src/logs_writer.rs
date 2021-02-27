@@ -21,6 +21,8 @@ impl LogsWriter {
     }
 
     pub fn log_request(&mut self, line: LogLine) {
-        self.file.write(line.to_string().as_bytes()).unwrap();
+        self.file
+            .write((line.to_string() + "\n").as_bytes())
+            .unwrap();
     }
 }
