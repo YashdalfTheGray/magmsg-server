@@ -1,4 +1,7 @@
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::{
+    path::Path,
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 use chrono::prelude::*;
 use rocket_contrib::json::JsonValue;
@@ -98,4 +101,17 @@ pub fn configure_application_logging(path: String) -> Result<(), fern::InitError
         )
         .apply()?;
     Ok(())
+}
+
+pub fn build_s3_object_key(file_path: String) -> String {
+    let path = Path::new(&file_path);
+    // we can reasonably unwrap this because file_path should
+    // always be defined and well-formed by the time we get here
+    let file_name = path.file_name().unwrap();
+
+    format!(
+        "{},{}",
+        file_name.to_str().unwrap(),
+        Utc::now().format("%Y-%m-%d-%H").to_string()
+    )
 }
