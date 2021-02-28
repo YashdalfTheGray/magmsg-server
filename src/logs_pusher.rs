@@ -6,9 +6,9 @@ use rusoto_core::RusotoError;
 use rusoto_credential::AutoRefreshingProvider;
 use rusoto_s3::{PutObjectError, PutObjectOutput};
 
-use crate::sdk::{self, CustomStsProvider};
-
 use crate::appenv::*;
+use crate::sdk::{self, CustomStsProvider};
+use crate::utils;
 
 pub struct S3LogsPusher {
     bucket_name: String,
@@ -21,7 +21,7 @@ impl S3LogsPusher {
         S3LogsPusher {
             bucket_name,
             last_successful_write: Utc::now(),
-            creds_provider: AutoRefreshingProvider::new(sdk::CustomStsProvider::new(
+            creds_provider: AutoRefreshingProvider::new(CustomStsProvider::new(
                 assume_role_user_creds(),
                 logging_assume_role_arn(),
                 Some(external_id()),
@@ -56,7 +56,7 @@ impl S3LogsPusher {
         let put_object_future = crate::dal::put_object(
             s3client,
             self.bucket_name.clone(),
-            Utc::now().format("%Y-%m-%d-%H").to_string(),
+            utils::build_s3_object_key(target_file.clone()),
             contents,
         );
         let put_object = runtime.block_on(put_object_future);
