@@ -2,7 +2,9 @@ use std::fs::read_to_string;
 
 use chrono::{DateTime, Utc};
 use log::{info, warn};
+use rusoto_core::RusotoError;
 use rusoto_credential::AutoRefreshingProvider;
+use rusoto_s3::{PutObjectError, PutObjectOutput};
 
 use crate::sdk::{self, CustomStsProvider};
 
@@ -29,7 +31,10 @@ impl S3LogsPusher {
         }
     }
 
-    pub fn publish_to_s3(&mut self, target_file: &String) {
+    pub fn publish_to_s3(
+        &mut self,
+        target_file: &String,
+    ) -> Result<PutObjectOutput, RusotoError<PutObjectError>> {
         let new_file_name = format!("{}.{}", target_file.to_string(), "old");
         let s3client = sdk::get_s3_client(self.creds_provider.clone(), region());
         let runtime = tokio::runtime::Runtime::new().unwrap();
@@ -53,5 +58,7 @@ impl S3LogsPusher {
         let put_object = runtime.block_on(put_object_future);
 
         self.last_successful_write = Utc::now();
+
+        put_object
     }
 }
