@@ -83,11 +83,13 @@ pub async fn put_message(
 pub async fn put_object(
     client: S3Client,
     bucket_name: String,
+    key: String,
     content: String,
 ) -> Result<PutObjectOutput, RusotoError<PutObjectError>> {
     let put_object_request = PutObjectRequest {
         bucket: bucket_name,
         body: Some(StreamingBody::from(content.clone().as_bytes().to_vec())),
+        key,
         ..Default::default()
     };
 

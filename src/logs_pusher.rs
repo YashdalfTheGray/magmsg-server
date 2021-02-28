@@ -53,8 +53,12 @@ impl S3LogsPusher {
             }
         };
 
-        let put_object_future =
-            crate::dal::put_object(s3client, self.bucket_name.clone(), contents);
+        let put_object_future = crate::dal::put_object(
+            s3client,
+            self.bucket_name.clone(),
+            Utc::now().format("%Y-%m-%d-%H").to_string(),
+            contents,
+        );
         let put_object = runtime.block_on(put_object_future);
 
         self.last_successful_write = Utc::now();
