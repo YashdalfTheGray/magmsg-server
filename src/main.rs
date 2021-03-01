@@ -56,18 +56,6 @@ fn main() {
 
     let (tx, rx) = mpsc::channel::<LogLine>();
 
-    let s3_logs_pusher_thread = thread::spawn(move || {
-        debug!(
-            "Started S3 logs pusher thread, sleeping for {} seconds before writing.",
-            log_write_interval().num_seconds()
-        );
-        thread::sleep(log_write_interval().to_std().unwrap());
-        let mut logs_pusher = logs_pusher::S3LogsPusher::new(logging_bucket_name());
-        logs_pusher
-            .publish_to_s3(&(request_log_path().clone()))
-            .unwrap();
-    });
-
     let request_logger_thread = thread::spawn(move || {
         debug!("Started file logger thread, waiting for request log statements.");
         let mut logger = logs_writer::LogsWriter::new(request_log_path());
@@ -108,7 +96,22 @@ fn main() {
             .launch();
     });
 
+    if appenv::logging_assume_role_arn().is_some() {
+        let s3_logs_pusher_thread = thread::spawn(move || {
+            debug!(
+                "Started S3 logs pusher thread, sleeping for {} seconds before writing.",
+                log_write_interval().num_seconds()
+            );
+            thread::sleep(log_write_interval().to_std().unwrap());
+            let mut logs_pusher = logs_pusher::S3LogsPusher::new(logging_bucket_name());
+            logs_pusher
+                .publish_to_s3(&(request_log_path().clone()))
+                .unwrap();
+        });
+
+        s3_logs_pusher_thread.join().unwrap();
+    }
+
     rocket_thread_handle.join().unwrap();
     request_logger_thread.join().unwrap();
-    s3_logs_pusher_thread.join().unwrap();
 }

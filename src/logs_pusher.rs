@@ -18,6 +18,9 @@ pub struct S3LogsPusher {
 
 impl S3LogsPusher {
     pub fn new(bucket_name: String) -> S3LogsPusher {
+        // When this code gets executed, we have already checked that
+        // logging_assume_role_arn() will return a Some() so it is safe
+        // to unwrap it here!
         S3LogsPusher {
             bucket_name,
             last_successful_write: Utc::now(),
