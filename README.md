@@ -64,7 +64,7 @@ Additionally, the logs folder contains a request log file that contains logs tha
 
 ## Environment variable configuration
 
-This application requires certain environment variables to be present before it will start.
+This application requires certain environment variables to be present before it will start. If no `LOGGING_ASSUME_ROLE_ARN` is provided, S3 log uploading will be disabled and `LOGGING_BUCKET_NAME`, and `LOG_WRITE_INTERVAL` variables will be ignored.
 
 ```
 PORT=<the port to run at, optional, defaults to 8080>
@@ -87,7 +87,7 @@ AWS_REGION=<aws region>
 
 This server comes equiped with Docker support. Once you have pulled down the repository, run `docker build -t magmsg-server .` to get started. Once the image is built, you can run the container by running `docker run -d --rm --name <some_name> -p 8080:8080 -v logs/:/app/logs --env-file .env magmsg-server`.
 
-Some explanation, the `-p` switch maps a container port to a host port, the `-v` flag mounts the logs folder into the container and you'll still need the `.env` file set up properly for it. The `-v` flag will mount the logs directory in the repository into the container so that the logs come out of the container.
+Some explanation, the `-p` switch maps a container port to a host port, the `-v` flag mounts the logs folder into the container and you'll still need the `.env` file set up properly for it. The `-v` flag will mount the logs directory in the repository into the container so that the logs come out of the container and can be accessed from the host filesystem.
 
 ## Resources
 
