@@ -23,7 +23,7 @@ impl S3LogsPusher {
             last_successful_write: Utc::now(),
             creds_provider: AutoRefreshingProvider::new(CustomStsProvider::new(
                 assume_role_user_creds(),
-                logging_assume_role_arn(),
+                logging_assume_role_arn().unwrap(),
                 Some(external_id()),
                 region(),
             ))

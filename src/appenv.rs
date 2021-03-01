@@ -45,8 +45,11 @@ pub fn assume_role_arn() -> String {
         .expect("Environment variable AWS_ASSUME_ROLE_ARN is required to be defined.")
 }
 
-pub fn logging_assume_role_arn() -> String {
-    env::var("LOGGING_ASSUME_ROLE_ARN").unwrap_or_default()
+pub fn logging_assume_role_arn() -> Option<String> {
+    match env::var("LOGGING_ASSUME_ROLE_ARN") {
+        Ok(val) => Some(val),
+        Err(_) => None,
+    }
 }
 
 pub fn user_access_token() -> String {
