@@ -22,6 +22,7 @@ mod appenv;
 mod authenticator;
 mod catchers;
 mod constants;
+mod contexts;
 mod dal;
 mod log_line;
 mod logs_pusher;
