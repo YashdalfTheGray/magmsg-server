@@ -1,14 +1,22 @@
 use rocket::{http::Status, State};
-use rocket_contrib::json::{Json, JsonValue};
+use rocket_contrib::{
+    json::{Json, JsonValue},
+    templates::Template,
+};
 use rusoto_credential::AutoRefreshingProvider;
 
-use crate::sdk::CustomStsProvider;
 use crate::utils::determine_status;
 use crate::{authenticator::Authenticator, message_request::MessageRequest};
+use crate::{contexts::IndexTemplateContext, sdk::CustomStsProvider};
 
 #[get("/")]
-pub fn index() -> &'static str {
-    "Hello, world!"
+pub fn index() -> Template {
+    Template::render(
+        "index",
+        &IndexTemplateContext {
+            name: String::from("Message Sender"),
+        },
+    )
 }
 
 #[get("/api")]
