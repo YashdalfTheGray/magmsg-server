@@ -1,4 +1,4 @@
-use std::{any::Any, collections::HashMap, env, str::FromStr};
+use std::{env, str::FromStr};
 
 use chrono::Duration;
 use rusoto_core::Region;
@@ -6,23 +6,23 @@ use rusoto_credential::StaticProvider;
 
 use crate::log_line::LogFormat;
 
-pub struct AppEnvContainer {
-    pub port: u16,
-    pub region: Region,
-    pub table_name: String,
-    pub assume_role_user_creds: StaticProvider,
-    pub external_id: String,
-    pub assume_role_arn: String,
-    pub logging_assume_role_arn: Option<String>,
-    pub user_access_token: String,
-    pub auth_key_header: String,
-    pub logging_bucket_name: String,
-    pub log_format: LogFormat,
-    pub log_write_interval: Duration,
-    pub application_log_path: String,
-    pub request_log_path: String,
-    pub log_level: log::LevelFilter,
-}
+// pub struct AppEnvContainer {
+//     pub port: u16,
+//     pub region: Region,
+//     pub table_name: String,
+//     pub assume_role_user_creds: StaticProvider,
+//     pub external_id: String,
+//     pub assume_role_arn: String,
+//     pub logging_assume_role_arn: Option<String>,
+//     pub user_access_token: String,
+//     pub auth_key_header: String,
+//     pub logging_bucket_name: String,
+//     pub log_format: LogFormat,
+//     pub log_write_interval: Duration,
+//     pub application_log_path: String,
+//     pub request_log_path: String,
+//     pub log_level: log::LevelFilter,
+// }
 
 pub fn port() -> u16 {
     match env::var("PORT") {
