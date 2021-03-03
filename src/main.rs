@@ -15,7 +15,7 @@ use dotenv::dotenv;
 use log::debug;
 use log_line::LogLine;
 use rocket::config::{Config, Environment};
-use rocket_contrib::helmet::SpaceHelmet;
+use rocket_contrib::{helmet::SpaceHelmet, serve::StaticFiles};
 use rusoto_credential::AutoRefreshingProvider;
 
 mod appenv;
@@ -78,7 +78,6 @@ fn main() {
             .mount(
                 "/",
                 routes![
-                    routes::index,
                     routes::api_index,
                     routes::get_all_messages,
                     routes::get_all_messages_no_auth,
@@ -88,6 +87,7 @@ fn main() {
                     routes::get_one_message_no_auth,
                 ],
             )
+            .mount("/", StaticFiles::from("/public"))
             .register(catchers![
                 catchers::bad_request,
                 catchers::unauthorized,
