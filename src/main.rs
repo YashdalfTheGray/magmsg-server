@@ -15,7 +15,7 @@ use dotenv::dotenv;
 use log::debug;
 use log_line::LogLine;
 use rocket::config::{Config, Environment};
-use rocket_contrib::{helmet::SpaceHelmet, templates::Template};
+use rocket_contrib::helmet::SpaceHelmet;
 use rusoto_credential::AutoRefreshingProvider;
 
 mod appenv;
@@ -74,7 +74,6 @@ fn main() {
             .attach(SpaceHelmet::default())
             .attach(request_id::RequestId::default())
             .attach(request_logger::RequestLogger::new(mutex_tx, None))
-            .attach(Template::fairing())
             .manage(auto_app_creds_provider)
             .mount(
                 "/",
