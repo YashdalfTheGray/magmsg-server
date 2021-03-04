@@ -1,30 +1,17 @@
 use rocket::{http::Status, State};
-use rocket_contrib::{
-    json::{Json, JsonValue},
-    templates::Template,
-};
+use rocket_contrib::json::{Json, JsonValue};
 use rusoto_credential::AutoRefreshingProvider;
 
+use crate::sdk::CustomStsProvider;
 use crate::utils::determine_status;
 use crate::{authenticator::Authenticator, message_request::MessageRequest};
-use crate::{contexts::IndexTemplateContext, sdk::CustomStsProvider};
 
 #[get("/")]
-pub fn index() -> Template {
-    Template::render(
-        "index",
-        &IndexTemplateContext {
-            name: String::from("Message Sender"),
-        },
-    )
-}
-
-#[get("/api")]
 pub fn api_index() -> JsonValue {
     determine_status()
 }
 
-#[get("/api/messages?<fields>")]
+#[get("/messages?<fields>")]
 pub fn get_all_messages(
     fields: Option<String>,
     _auth: Authenticator,
@@ -38,12 +25,12 @@ pub fn get_all_messages(
     json!(messages)
 }
 
-#[get("/api/messages", rank = 2)]
+#[get("/messages", rank = 2)]
 pub fn get_all_messages_no_auth() -> Status {
     Status::Unauthorized
 }
 
-#[put("/api/messages", format = "application/json", data = "<request_json>")]
+#[put("/messages", format = "application/json", data = "<request_json>")]
 pub fn add_new_message(
     request_json: Json<MessageRequest>,
     _auth: Authenticator,
@@ -64,12 +51,12 @@ pub fn add_new_message(
     Status::Created
 }
 
-#[put("/api/messages", rank = 2)]
+#[put("/messages", rank = 2)]
 pub fn add_new_message_no_auth() -> Status {
     Status::Unauthorized
 }
 
-#[get("/api/messages/<uuid>?<fields>")]
+#[get("/messages/<uuid>?<fields>")]
 pub fn get_one_message(
     uuid: String,
     fields: Option<String>,
@@ -85,7 +72,7 @@ pub fn get_one_message(
     json!(message)
 }
 
-#[get("/api/messages/<_uuid>", rank = 2)]
+#[get("/messages/<_uuid>", rank = 2)]
 pub fn get_one_message_no_auth(_uuid: String) -> Status {
     Status::Unauthorized
 }
