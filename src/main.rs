@@ -77,6 +77,10 @@ fn main() {
             .manage(auto_app_creds_provider)
             .mount(
                 "/",
+                StaticFiles::from(concat!(env!("CARGO_MANIFEST_DIR"), "/public")),
+            )
+            .mount(
+                "/api",
                 routes![
                     routes::api_index,
                     routes::get_all_messages,
@@ -87,7 +91,6 @@ fn main() {
                     routes::get_one_message_no_auth,
                 ],
             )
-            .mount("/", StaticFiles::from("/public"))
             .register(catchers![
                 catchers::bad_request,
                 catchers::unauthorized,
