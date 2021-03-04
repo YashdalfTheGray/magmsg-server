@@ -1,0 +1,19 @@
+{
+  "name": "magmsg-server",
+  "version": "1.0.0",
+  "description": "A server that stores and backs up the messages sent to the edge",
+  "main": "public/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YashdalfTheGray/magmsg-server.git"
+  },
+  "author": "Yash Kulshrestha",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YashdalfTheGray/magmsg-server/issues"
+  },
+  "homepage": "https://github.com/YashdalfTheGray/magmsg-server#readme"
+}
