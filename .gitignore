@@ -1,3 +1,7 @@
+### Project specific ###
+public/main.css
+public/main.js
+
 # File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
 
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,vim,rust,macos,linux,node,react
