@@ -4,7 +4,9 @@
   "description": "A server that stores and backs up the messages sent to the edge",
   "main": "public/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "npx rimraf public/**/*.{js,map,css,json}",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production"
   },
   "repository": {
     "type": "git",
