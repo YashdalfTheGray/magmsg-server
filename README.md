@@ -2,6 +2,10 @@
 
 A server that stores and backs up the messages sent to the edge
 
+## Why is there a `package.json` in a Rust project?
+
+_Technically_ the files shouldn't interfere with each other, they are orthogonal concerns and so I figured, might as well try to keep it all in one directory. I don't really recommend doing this from an organizational standpoint, but it's an interesting experiment.
+
 ## API
 
 The API for this is fairly simple. The main primitive is a message. Operations except for the UD in CRUDL are supported currently - create, read, list. The fields in a message are,
