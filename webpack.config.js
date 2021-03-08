@@ -51,7 +51,7 @@ module.exports = (_, argv) => ({
   },
   resolve: {
     alias: {
-      '@magmsg/components': path.resolve(__dirname, './client/components'),
+      '@magmsg/client': path.resolve(__dirname, './client'),
     },
     extensions: ['.ts', '.js', '.css'],
   },

@@ -19,7 +19,11 @@
     "preserveConstEnums": true,
     "suppressImplicitAnyIndexErrors": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@magmsg/client/*": ["client/*"]
+    }
   },
   "include": ["client/**/*"],
   "exclude": ["server/**/*", "docs/**/*"],
