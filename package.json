@@ -6,7 +6,9 @@
   "scripts": {
     "clean": "npm exec rimraf public/**/*.{js,map,css,json}",
     "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production"
+    "build:watch": "webpack --mode=development --watch",
+    "build:prod": "webpack --mode=production",
+    "start:assets": "npm run build:watch"
   },
   "repository": {
     "type": "git",
