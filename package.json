@@ -8,7 +8,9 @@
     "build:dev": "webpack --mode=development",
     "build:watch": "webpack --mode=development --watch",
     "build:prod": "webpack --mode=production",
-    "start:assets": "npm run build:watch"
+    "start:assets": "npm run build:watch",
+    "start:server": "cargo run",
+    "start": "concurrently --raw \"npm:start:server\" \"npm:start:assets\""
   },
   "repository": {
     "type": "git",
