@@ -71,4 +71,7 @@ module.exports = (_, argv) => ({
   stats: {
     colors: true,
   },
+  watchOptions: {
+    ignored: ['node_modules/**', 'package.json', 'package-lock.json'],
+  },
 });
