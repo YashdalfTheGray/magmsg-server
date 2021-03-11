@@ -1,0 +1,13 @@
+@import 'client/theme';
+
+.magmsg-header {
+  justify-content: center;
+  align-items: center;
+  color: $secondary-text;
+  background-color: $primary;
+
+  .title {
+    font-size: 24px;
+    margin: 8px 0px;
+  }
+}
