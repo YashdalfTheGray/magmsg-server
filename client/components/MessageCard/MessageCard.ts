@@ -3,13 +3,19 @@ import { IMessage } from '@magmsg/client/customTypes';
 
 import './messagecard.scss';
 
-export default class MessageCard extends Component<IMessage> {
-  constructor(props: IMessage) {
+export interface IMessageCardProps {
+  message: IMessage;
+}
+export default class MessageCard extends Component<IMessageCardProps> {
+  constructor(props: IMessageCardProps) {
     super('MessageCard', props);
   }
 
   render() {
-    const { messageId, createdAt, content, createdBy } = this.props;
+    const {
+      message: { messageId, createdAt, content, createdBy },
+    } = this.props;
+
     return `
       <div class=".message-card">
         <pre>${messageId}</pre>
