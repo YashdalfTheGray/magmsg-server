@@ -1,5 +1,6 @@
 import Component from '@magmsg/client/Component';
-import Header from './components/Header';
+import Header from '@magmsg/client/components/Header';
+import Content from '@magmsg/client/components/Content';
 
 export default class App extends Component {
   public constructor() {
@@ -9,8 +10,9 @@ export default class App extends Component {
   render() {
     return `
     <div class="expand-to-fill-container flex-column">
-    ${new Header().render()}
-  </div>
+      ${new Header().render()}
+      ${new Content().render()}
+    </div>
     `;
   }
 }
