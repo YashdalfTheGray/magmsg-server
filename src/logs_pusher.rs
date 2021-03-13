@@ -38,10 +38,9 @@ impl S3LogsPusher {
         &mut self,
         target_file: &String,
     ) -> Result<PutObjectOutput, RusotoError<PutObjectError>> {
-        let new_file_name = format!("{}.{}", target_file.to_string(), "old");
         let s3client = sdk::get_s3_client(self.creds_provider.clone(), region());
         let runtime = tokio::runtime::Runtime::new().unwrap();
-        let contents = match read_to_string(new_file_name.clone()) {
+        let contents = match read_to_string(target_file.clone()) {
             Ok(file_str) => {
                 info!(
                     "Reading application log to upload to S3, length: {}",
